@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package>
+  <name>minas_control</name>
+  <version>0.0.0</version>
+  <description>The minas_control package</description>
+
+  <maintainer email="534o@opensource-robotics.tokyo.jp">Tokyo Opensource Robotics Developer 534</maintainer>
+
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>ethercat_manager</build_depend>
+  <run_depend>ethercat_manager</run_depend>
+
+  <export>
+  </export>
+</package>
