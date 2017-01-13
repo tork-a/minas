@@ -60,3 +60,38 @@ install(TARGETS slaveinfo simple_test reset
 #############
 ## Testing ##
 #############
+
+#############
+## Release ##
+#############
+
+# debbuild
+# catkin build minas_control --make-args debbuild
+# ROS_PARALLEL_JOBS='' catkin_make --pkg minas_control -- debbuild
+add_custom_target(debbuild
+  COMMAND bloom-generate rosdebian --os-name ubuntu --os-version trusty --ros-distro indigo
+  COMMAND MAKEFLAGS= fakeroot debian/rules binary
+  COMMAND rm -fr debian obj-x86_64-linux-gnu
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+  )
+
+# make docs
+# ROS_PARALLEL_JOBS='' catkin_make --pkg minas_control -- docbuild
+add_custom_target(docbuild
+  COMMAND cmake -E remove_directory output
+  COMMAND cmake -E make_directory output
+  COMMAND sphinx-build -b latex doc output
+  COMMAND sed -i 's@\\\\chapter{[0-9. ]*@\\\\chapter{@' output/minas_control.tex
+  COMMAND sed -i 's@\\\\section{[0-9. ]*@\\\\section{@' output/minas_control.tex
+  COMMAND sed -i 's@\\\\subsection@\\\\subsubsection@' output/minas_control.tex
+  COMMAND sed -i 's@\\\\section@\\\\subsection@' output/minas_control.tex
+  COMMAND sed -i 's@\\\\chapter@\\\\section@' output/minas_control.tex
+  # COMMAND sed -i 's@\\\\tableofcontents@\\\\chapter{unicub\\\\_gazebo} %\\\\tableofcontents@' output/minas_control.tex
+  COMMAND sed -i 's@\\\\tableofcontents@\\\\setcounter{chapter}{1}\\\\setcounter{tocdepth}{3}\\\\tableofcontents@' output/minas_control.tex
+  COMMAND sed -i 's@\\\\setbox0@\\\\iffalse@' output/minas_control.tex
+  COMMAND sed -i 's@{\\\\box0}\\\\end{center}@{\\\\box0}\\\\end{center}\\\\fi@' output/minas_control.tex
+  COMMAND sed -i 's@\\\\def\\\\PYGZsq{\\S*}@\\\\usepackage{upquote}\\\\def\\\\PYGZsq{\\\\textquotesingle}@' output/minas_control.tex
+  COMMAND make -C output
+  COMMAND cmake -E copy output/${PROJECT_NAME}.pdf output/${PROJECT_NAME}-${minas_control_VERSION}.pdf
+  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+  )
