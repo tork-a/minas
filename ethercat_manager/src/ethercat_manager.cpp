@@ -157,6 +157,14 @@ EtherCatManager::EtherCatManager(const std::string& ifname)
 EtherCatManager::~EtherCatManager()
 {
   stop_flag_ = true;
+
+  // Request init operational state for all slaves
+  ec_slave[0].state = EC_STATE_INIT;
+
+  /* request init state for all slaves */
+  ec_writestate(0);
+
+  //stop SOEM, close socket
   ec_close();
   cycle_thread_.join();
 }
