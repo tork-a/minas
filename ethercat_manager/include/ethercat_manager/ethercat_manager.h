@@ -106,6 +106,17 @@ public:
    */
   uint8_t readOutput(int slave_no, uint8_t channel) const;
 
+  /**
+   * \brief write the SDO object of the given slave no
+   *
+   * @param[in] slave_no The slave number of the device to read from (>= 1)
+   * @param[in] index The index address of the parameter in SDO object
+   * @param[in] subidx The sub-index address of the parameter in SDO object
+   * @param[in] value value to write
+   */
+  template <typename T>
+  uint8_t writeSDO(int slave_no, uint16_t index, uint8_t subidx, T value) const;
+
 private:
   bool initSoem(const std::string& ifname);
 
