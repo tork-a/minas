@@ -34,6 +34,18 @@ target_link_libraries(slaveinfo ${catkin_LIBRARIES})
 target_link_libraries(simple_test ${catkin_LIBRARIES} minas_client)
 target_link_libraries(reset ${catkin_LIBRARIES} minas_client)
 
+function(set_sudo_binary tgt)
+  get_target_property(loc ${tgt} "LOCATION")
+  string(ASCII 27 ESCAPE)
+  add_custom_target(sudo_${tgt}
+    COMMAND sudo -n sh -c 'setcap cap_net_raw+ep ${loc}' || (>&2 echo "${ESCAPE}[31m#\ type\ following\ command\ before\ execute\ reset...\ sudo\ setcap cap_net_raw+ep\ ${loc}${ESCAPE}[0m")
+    DEPENDS bin/${tgt})
+  add_custom_target(sudo_${tgt}_all ALL DEPENDS sudo_${tgt})
+endfunction()
+set_sudo_binary(slaveinfo)
+set_sudo_binary(simple_test)
+set_sudo_binary(reset)
+
 #############
 ## Install ##
 #############
