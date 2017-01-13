@@ -72,6 +72,8 @@ typedef struct {
   uint32 target_velocity;
 } MinasOutput;
 
+typedef enum {NOT_READY, SWITCH_DISABLED, READY_SWITCH, SWITCHED_ON, OPERATION_ENABLED, QUICK_STOP, FAULT_REACTION, FAULT, UNKNOWN} PDS_STATUS;
+
 class MinasClient
 {
 public:
@@ -106,7 +108,36 @@ public:
    */
   MinasOutput readOutputs() const;
 
+  /**
+   * \brief Reset alarm
+   * \return void
+   */
+  void reset();
+
+  /**
+   * \brief Send servo on sequence to the controller
+   * \return void
+   */
+  void servoOn();
+
+  /**
+   * \brief Send servo off sequence to the controller
+   * \return void
+   */
+  void servoOff();
+
 private:
+  /**
+   * \brief get status from input data
+   * \return status
+   */
+  PDS_STATUS getPDSStatus(const MinasInput input) const;
+
+  /**
+   * \brief print status from input data
+   */
+  void printPDSStatus(const MinasInput input) const;
+
   ethercat::EtherCatManager& manager_;
   const int slave_no_;
 };

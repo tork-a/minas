@@ -112,4 +112,143 @@ MinasOutput MinasClient::readOutputs() const
 
   return output;
 }
+
+void MinasClient::reset()
+{
+  MinasInput input = readInputs();
+  if ( input.error_code == 0 ) return;
+
+  // section 8.4 of SX-DSV02470 --248--
+  MinasOutput output;
+  memset(&output, 0x00, sizeof(MinasOutput));
+  output.controlword = 0x0080; // fault reset
+  writeOutputs(output);
+
+  while ( input.error_code != 0 ) {
+    sleep(1);
+    printf("Waiting for Fault Reset...\n");
+    input = readInputs();
+    printf("error_code = %04x, status_word %04x, operation_mode = %2d, position = %08x\n",
+	   input.error_code, input.statusword, input.operation_mode, input.position_actual_value);
+  }
+  printf("Fault was cleared\n");
+}
+
+void MinasClient::servoOn()
+{
+  MinasInput input = readInputs();
+  printPDSStatus(input);
+  MinasOutput output;
+  memset(&output, 0x00, sizeof(MinasOutput));
+  output.operation_mode = 1; // pp (profile position mode)
+  while (getPDSStatus(input) != OPERATION_ENABLED) {
+    switch ( getPDSStatus(input) ) {
+      case SWITCH_DISABLED:
+	output.controlword = 0x0006; // move to ready to switch on
+	break;
+      case READY_SWITCH:
+	output.controlword = 0x0007; // move to switched on
+	break;
+      case SWITCHED_ON:
+	output.controlword = 0x000f; // move to operation enabled
+	break;
+      case OPERATION_ENABLED:
+	break;
+      default:
+	printf("unknown status");
+	return;
+      }
+    writeOutputs(output);
+    usleep(10*1000);
+    input = readInputs();
+    printPDSStatus(input);
+  }
+}
+
+void MinasClient::servoOff()
+{
+  MinasInput input = readInputs();
+  printPDSStatus(input);
+  MinasOutput output;
+  memset(&output, 0x00, sizeof(MinasOutput));
+  while (getPDSStatus(input) != SWITCH_DISABLED) {
+    switch ( getPDSStatus(input) ) {
+      case READY_SWITCH:
+	output.controlword = 0x0000; // disable voltage
+	break;
+      case SWITCHED_ON:
+	output.controlword = 0x0006; // shutdown
+	break;
+      case OPERATION_ENABLED:
+	output.controlword = 0x0007; // disable operation
+	break;
+      default:
+	printf("unknown status");
+	output.controlword = 0x0000; // disable operation
+	break;
+    }
+    writeOutputs(output);
+    usleep(10*1000);
+    input = readInputs();
+    printPDSStatus(input);
+  }
+}
+
+PDS_STATUS MinasClient::getPDSStatus(const MinasInput input) const
+{
+  uint16 statusword = input.statusword;
+  if (((statusword) & 0x004f) == 0x0000) { // x0xx 0000
+    return NOT_READY;
+  }else if (((statusword) & 0x004f) == 0x0040) { // x1xx 0000
+    return SWITCH_DISABLED;
+  }else if (((statusword) & 0x006f) == 0x0021) { // x01x 0001
+    return READY_SWITCH;
+  }else if (((statusword) & 0x006f) == 0x0023) { // x01x 0011
+    return SWITCHED_ON;
+  }else if (((statusword) & 0x006f) == 0x0027) { // x01x 0111
+    return OPERATION_ENABLED;
+  }else if (((statusword) & 0x006f) == 0x0007) { // x00x 0111
+    return QUICK_STOP;
+  }else if (((statusword) & 0x004f) == 0x000f) { // x0xx 1111
+    return FAULT_REACTION;
+  }else if (((statusword) & 0x004f) == 0x0008) { // x0xx 1000
+    return FAULT;
+  }else{
+    return UNKNOWN;
+  }
+}
+
+void MinasClient::printPDSStatus(const MinasInput input) const
+{
+  switch ( getPDSStatus(input) ) {
+    case NOT_READY:
+      printf("Not ready to switch on\n");
+      break;
+    case SWITCH_DISABLED:
+      printf("Switch on disabled\n");
+      break;
+    case READY_SWITCH:
+      printf("Ready to switch on\n");
+      break;
+    case SWITCHED_ON:
+      printf("Switched on\n");
+      break;
+    case OPERATION_ENABLED:
+      printf("Operation enabled\n");
+      break;
+    case QUICK_STOP:
+      printf("Quick stop active\n");
+      break;
+    case FAULT_REACTION:
+      printf("Fault reaction active\n");
+      break;
+    case FAULT:
+      printf("Fault\n");
+      break;
+    case UNKNOWN:
+      printf("Unknown status %04x\n", input.statusword);
+      break;
+    }
+}
+
 } // end of minas_control namespace
