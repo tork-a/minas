@@ -27,17 +27,19 @@ add_library(minas_client src/minas_client.cpp)
 ## Declare a C++ executable
 add_executable(slaveinfo src/slaveinfo.cpp)
 add_executable(simple_test src/simple_test.cpp)
+add_executable(reset src/reset.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(slaveinfo ${catkin_LIBRARIES})
 target_link_libraries(simple_test ${catkin_LIBRARIES} minas_client)
+target_link_libraries(reset ${catkin_LIBRARIES} minas_client)
 
 #############
 ## Install ##
 #############
 
 ## Mark executables and/or libraries for installation
-install(TARGETS slaveinfo simple_test
+install(TARGETS slaveinfo simple_test reset
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
