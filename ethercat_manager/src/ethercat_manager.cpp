@@ -199,6 +199,44 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
 
   printf("SOEM found and configured %d slaves\n", ec_slavecount);
 
+  /*
+    SET PDO maping 4
+   */
+  if (ec_statecheck(0, EC_STATE_PRE_OP, EC_TIMEOUTSTATE*4) != EC_STATE_PRE_OP)
+    {
+      fprintf(stderr, "Could not set EC_STATE_PRE_OP\n");
+      return false;
+    }
+
+
+  for( int cnt = 1 ; cnt <= ec_slavecount ; cnt++)
+    {
+      int ret = 0, l;
+      uint8_t num_pdo ;
+      // set 0 change PDO mapping index
+      num_pdo = 0;
+      ret += ec_SDOwrite(cnt, 0x1c12, 0x00, FALSE, sizeof(num_pdo), &num_pdo, EC_TIMEOUTRXM);
+      // set to default PDO mapping 4
+      uint16_t idx_rxpdo = 0x1603;
+      ret += ec_SDOwrite(cnt, 0x1c12, 0x01, FALSE, sizeof(idx_rxpdo), &idx_rxpdo, EC_TIMEOUTRXM);
+      // set number of assigned PDOs
+      num_pdo = 1;
+      ret += ec_SDOwrite(cnt, 0x1c12, 0x00, FALSE, sizeof(num_pdo), &num_pdo, EC_TIMEOUTRXM);
+      printf("RxPDO mapping object index %d = %04x ret=%d\n", cnt, idx_rxpdo, ret);
+
+      // set 0 change PDO mapping index
+      num_pdo = 0;
+      ret += ec_SDOwrite(cnt, 0x1c13, 0x00, FALSE, sizeof(num_pdo), &num_pdo, EC_TIMEOUTRXM);
+      // set to default PDO mapping 4
+      uint16_t idx_txpdo = 0x1a03;
+      ret += ec_SDOwrite(cnt, 0x1c13, 0x01, FALSE, sizeof(idx_txpdo), &idx_txpdo, EC_TIMEOUTRXM);
+      // set number of assigned PDOs
+      num_pdo = 1;
+      ret += ec_SDOwrite(cnt, 0x1c13, 0x00, FALSE, sizeof(num_pdo), &num_pdo, EC_TIMEOUTRXM);
+      printf("TxPDO mapping object index %d = %04x ret=%d\n", cnt, idx_txpdo, ret);
+    }
+
+  // configure IOMap
   unsigned map_size = ec_slave[0].Obytes + ec_slave[0].Ibytes;
   iomap_.reset(new uint8_t[map_size]);
 
