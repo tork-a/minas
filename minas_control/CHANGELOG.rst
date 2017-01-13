@@ -2,8 +2,8 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.0 (2017-01-14)
+------------------
 * add doc and inital index.rst
 * CMakeLists.txt : add install include directory
 * CMakeLists.txt : add debbuild/docbuild target
