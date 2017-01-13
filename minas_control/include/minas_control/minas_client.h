@@ -45,23 +45,31 @@ namespace minas_control
  *        can translate robot input/output messages and translate them to
  *        the underlying IO Map.
  */
+
+// Default PDO maping 4
+// Position contorl, Velocity COntrol, Torque Controle (Touch proble, torque limit)
 typedef struct {
   // input
   uint16 error_code;
   uint16 statusword;
   uint8  operation_mode;
   uint32 position_actual_value;
+  uint32 velocity_actual_value;
+  uint16 torque_actual_value;
   uint16 touch_probe_status;
   uint32 touch_probe_posl_pos_value;
-  uint32 following_error_acutal_value;
   uint32 digital_inputs;
 } MinasInput;
 
 typedef struct {
   uint16 controlword;
   uint8  operation_mode;
+  uint16 target_torque;
+  uint16 max_torque;
   uint32 target_position;
+  uint32 max_motor_speed;
   uint16 touch_probe_function;
+  uint32 target_velocity;
 } MinasOutput;
 
 class MinasClient
