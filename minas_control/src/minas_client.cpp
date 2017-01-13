@@ -251,4 +251,39 @@ void MinasClient::printPDSStatus(const MinasInput input) const
     }
 }
 
+void MinasClient::setTrqueForEmergencyStop(double val)
+{
+  // 3511h, unit: %, range: 0 - 500, I16
+  int16_t i16val = (int16_t)val;
+  manager_.writeSDO<int16_t>(slave_no_, 0x3511, 0x00, i16val);
+}
+
+void MinasClient::setOverLoadLevel(double val)
+{
+  // 3512h, unit: %, range: 0 - 500, I16
+  int16_t i16val = (int16_t)val;
+  manager_.writeSDO<int16_t>(slave_no_, 0x3512, 0x00, i16val);
+}
+
+void MinasClient::setOverSpeedLevel(double val)
+{
+  // 3513h, unit: r/min, range: 0 - 20000, I16
+  int16_t i16val = (int16_t)val;
+  manager_.writeSDO<int16_t>(slave_no_, 0x3513, 0x00, i16val);
+}
+
+void MinasClient::setMotorWorkingRange(double val)
+{
+  // 3514h, unit: 0.1 revolute, range: 0 - 1000, I16
+  int16_t i16val = (int16_t)(val*10);
+  manager_.writeSDO<int16_t>(slave_no_, 0x3514, 0x00, i16val);
+}
+
+void MinasClient::setProfileVelocity(uint32_t val)
+{
+  // 6091h, unit: pulse, range: 0 - 4294967295, U32
+  uint32_t u32val = (uint32_t)val;
+  manager_.writeSDO<uint32_t>(slave_no_, 0x6081, 0x00, u32val);
+}
+
 } // end of minas_control namespace

@@ -126,6 +126,36 @@ public:
    */
   void servoOff();
 
+  /*
+   * \brief Torque setup for emergency stop [%] 0 - 500 (3511h / 00h)
+   * \return void
+   */
+  void setTrqueForEmergencyStop(double val);
+
+  /*
+   * \brief Over-load level setup [%] 0 - 500 (3512h / 00h)
+   * \return void
+   */
+  void setOverLoadLevel(double val);
+
+  /*
+   * \brief Over-speed level setup [r/min] 0 - 2000 (3513h / 00h)
+   * \return void
+   */
+  void setOverSpeedLevel(double val);
+
+  /*
+   * \brief Motor working range setup [revolution] 0 - 100 (3514h / 00h)
+   * \return void
+   */
+  void setMotorWorkingRange(double val);
+
+  /*
+   * \brief set Profile velocity 0 - 4294967295 (6081h / 00h)
+   * \return void
+   */
+  void setProfileVelocity(uint32_t val);
+
 private:
   /**
    * \brief get status from input data
