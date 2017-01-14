@@ -2,6 +2,12 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* CMakeLists:txt : debbuild : make sure that we can run sudo
+* CMakeLists.txt : forget to install minas_client
+* Contributors: Tokyo Opensource Robotics Developer 534
+
 0.1.0 (2017-01-14)
 ------------------
 * add doc and inital index.rst
