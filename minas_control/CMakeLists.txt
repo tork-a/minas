@@ -51,7 +51,7 @@ set_sudo_binary(reset)
 #############
 
 ## Mark executables and/or libraries for installation
-install(TARGETS slaveinfo simple_test reset
+install(TARGETS slaveinfo simple_test reset minas_client
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
