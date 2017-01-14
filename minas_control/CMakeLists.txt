@@ -72,6 +72,7 @@ install(DIRECTORY include/${PROJECT_NAME}/
 # catkin build minas_control --make-args debbuild
 # ROS_PARALLEL_JOBS='' catkin_make --pkg minas_control -- debbuild
 add_custom_target(debbuild
+  COMMAND sudo -n true || (>&2 echo "debbuild need sudo access to make debs" && exit 1)
   COMMAND bloom-generate rosdebian --os-name ubuntu --os-version trusty --ros-distro indigo
   COMMAND MAKEFLAGS= fakeroot debian/rules binary
   COMMAND rm -fr debian obj-x86_64-linux-gnu
