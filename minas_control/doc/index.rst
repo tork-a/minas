@@ -258,8 +258,34 @@ Known Issues
 
 - `simple_test` ends with segfault
 
-- binary installed from deb package need to run like `sudo bash -c '. /opt/ros/indigo/setup.bash; rosrun minas_control slaveinfo eth0'`
+Trouble shooting
+----------------
 
+- If you could not initialize ethercat driver as follows,
+
+  .. code-block:: bash
+
+    $ reset eth4
+    SOEM (Simple Open EtherCAT Master)
+    Simple test
+    Initializing etherCAT master
+    Could not initialize ethercat driver
+    terminate called after throwing an instance of 'ethercat::EtherCatError'
+      what():  Could not initialize SOEM
+    Aborted (Core dump)
+
+  Please check if your binary have correctly set permissions by
+
+  .. code-block:: bash
+
+    $ getcap /opt/ros/indigo/lib/minas_control/reset
+    /opt/ros/indigo/lib/minas_control/reset = cap_net_raw+ep
+
+  If you can any `capability`, please try
+
+  .. code-block:: bash
+
+    $ sudo setcap cap_net_raw+ep /opt/ros/indigo/lib/minas_control/reset
 
 
 .. _MINAS-A5B:  https://industrial.panasonic.com/ww/products/motors-compressors/fa-motors/ac-servo-motors/minas-a5b
