@@ -256,8 +256,6 @@ To build the manual you have to install following deb packages
 Known Issues
 ------------
 
-- `simple_test` ends with segfault
-
 Trouble shooting
 ----------------
 
