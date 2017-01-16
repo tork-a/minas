@@ -2,8 +2,8 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.1.2 (2017-01-16)
+------------------
 * conf.py : add C++ API feature, but not enable due to bad layout
 * index.rst: use xml.etree to get version number from package.xml
 * doc/index.rst segfault was resolved
