@@ -2,6 +2,11 @@
 Changelog for package ethercat_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* ethercat_manager use pre allcoated iomap\_ to avoid segfault soem/test/ also uses this strategy
+* Contributors: Tokyo Opensource Robotics Developer 534
+
 0.1.1 (2017-01-15)
 ------------------
 

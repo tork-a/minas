@@ -2,6 +2,14 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* conf.py : add C++ API feature, but not enable due to bad layout
+* index.rst: use xml.etree to get version number from package.xml
+* doc/index.rst segfault was resolved
+* doc/index.rst: resolved permission problem
+* Contributors: Tokyo Opensource Robotics Developer 534
+
 0.1.1 (2017-01-15)
 ------------------
 * CMakeLists:txt : debbuild : make sure that we can run sudo
