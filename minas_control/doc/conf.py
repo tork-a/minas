@@ -13,6 +13,8 @@
 
 import os,sys
 import subprocess
+import time
+from xml.etree.ElementTree import ElementTree
 
 # -- General configuration ----------------------------------------------------
 
@@ -40,27 +42,18 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'minas_control'
-gitcmd = 'git log -n1 --pretty=format:%cD'.split()
-
-lastmod = subprocess.Popen(gitcmd, stdout=subprocess.PIPE).communicate()[0]
-dochash = subprocess.Popen('git log -n1 --pretty=format:%H'.split(),
-                           stdout=subprocess.PIPE).communicate()[0]
-
-print "dochash=", dochash
-copyright = u'2016, Tokyo Opensource Robotics Kyokai Association-- ' + ' Version ' + dochash + ", " \
-           + ' '.join(lastmod.split(' ')[:4])
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
-# The short X.Y version.
-from re import search
-result = search(r"<version>\s*(\d+\.\d+\.\d+)</version>",open('../package.xml').read())
-if not result:
-    print >>sys.stderr, 'You must have a Version field in your stack.yaml'
-    sys.exit(-1)
-version = result.groups()[0]
+try:
+    root = ElementTree(None, os.path.join('..', 'package.xml'))
+    version = root.findtext('version')
+    author_names = [a.text for a in root.findall('author')]
+    copyright = u'2017-%s, %s' % (time.strftime('%Y'), ', '.join(author_names))
+except Exception as e:
+    raise RuntimeError('Could not extract version and authors from package.xml:\n%s' % e)
 
 # The full version, including alpha/beta/rc tags.
 release = version
