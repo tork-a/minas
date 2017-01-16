@@ -121,7 +121,7 @@ private:
   bool initSoem(const std::string& ifname);
 
   const std::string ifname_;
-  boost::scoped_array<uint8_t> iomap_;
+  uint8_t iomap_[4096];
   boost::thread cycle_thread_;
   mutable boost::mutex iomap_mutex_;
   bool stop_flag_;

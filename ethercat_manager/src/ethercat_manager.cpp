@@ -237,10 +237,7 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
     }
 
   // configure IOMap
-  unsigned map_size = ec_slave[0].Obytes + ec_slave[0].Ibytes;
-  iomap_.reset(new uint8_t[map_size]);
-
-  int iomap_size = ec_config_map(iomap_.get());
+  int iomap_size = ec_config_map(iomap_);
   printf("SOEM IOMap size: %d\n", iomap_size);
 
   // locates dc slaves - ???
