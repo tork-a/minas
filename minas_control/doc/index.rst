@@ -203,6 +203,15 @@ If you have somethig wrong, you can run reset command. If you still have issue, 
   Finished configuration successfully
   End program
 
+.. API Documents
+.. =============
+
+.. .. toctree::
+..    :maxdepth: 2
+
+..    api_ethercat_manager
+..    api_minas_control
+
 Maintainer Tips
 ===============
 

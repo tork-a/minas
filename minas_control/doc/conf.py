@@ -16,6 +16,11 @@ import subprocess
 import time
 from xml.etree.ElementTree import ElementTree
 
+subprocess.call('doxygen Doxyfile.minas_control', shell=True)
+subprocess.call('doxygen Doxyfile.ethercat_manager', shell=True)
+subprocess.call('cd html_minas_control; cp *.eps ../output/; pandoc refman.tex -s -o ../api_minas_control.rst', shell=True)
+subprocess.call('cd html_ethercat_manager; cp *.eps ../../output; pandoc refman.tex -s -o ../api_ethercat_manager.rst', shell=True)
+
 # -- General configuration ----------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings.
