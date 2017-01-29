@@ -72,7 +72,12 @@ typedef struct {
   uint32 target_velocity;
 } MinasOutput;
 
-typedef enum {NOT_READY, SWITCH_DISABLED, READY_SWITCH, SWITCHED_ON, OPERATION_ENABLED, QUICK_STOP, FAULT_REACTION, FAULT, UNKNOWN} PDS_STATUS;
+typedef enum {NOT_READY, SWITCH_DISABLED, READY_SWITCH, SWITCHED_ON, OPERATION_ENABLED, QUICK_STOP, FAULT_REACTION, FAULT, UNKNOWN} PDS_STATUS;  // Statusword(6041h) SX-DSV02470 p.78
+
+typedef enum {NO_MODE_CHANGE, PROFILE_POSITION_MODE, VELOCITY_MODE, PROFILE_VELOCITY_MODE, TORQUE_PROFILE_MODE, HOMING_MODE, INTERPOLATED_POSITION_MODE, CYCLIC_SYNCHRONOUS_POSITION_MODE, CYCLIC_SYNCHRONOUS_VELOCITY_MODE, CYCLIC_SYNCHRONOUS_TORQUE_MODE} PDS_OPERATION; // Mode of operation(6061h) SX-DSV02470 p.83
+
+ typedef enum {//HALT, FAULT_RESET, ENABLE_OPERATION, QUICK_STOP, ENABLE_VOLTAGE, SWITCH_ON, 
+} PDS_CONTROL; // Controlworld(6040h) SX-DSV02470 p.76
 
 class MinasClient
 {
@@ -156,6 +161,21 @@ public:
    */
   void setProfileVelocity(uint32_t val);
 
+  /**
+   * \brief print status from input data
+   */
+  void printPDSStatus(const MinasInput input) const;
+
+  /**
+   * \brief print operation mode from input data
+   */
+  void printPDSOperation(const MinasInput input) const;
+
+  /**
+   * \brief print control status from input data
+   */
+  void printPDSControl(const MinasInput input) const;
+
 private:
   /**
    * \brief get status from input data
@@ -164,9 +184,16 @@ private:
   PDS_STATUS getPDSStatus(const MinasInput input) const;
 
   /**
-   * \brief print status from input data
+   * \brief get operation mode from input data
+   * \return status
    */
-  void printPDSStatus(const MinasInput input) const;
+  PDS_OPERATION getPDSOperation(const MinasInput input) const;
+
+  /**
+   * \brief get control status from input data
+   * \return status
+   */
+  PDS_STATUS getPDSControl(const MinasInput input) const;
 
   ethercat::EtherCatManager& manager_;
   const int slave_no_;

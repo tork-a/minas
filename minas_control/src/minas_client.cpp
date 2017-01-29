@@ -218,8 +218,31 @@ PDS_STATUS MinasClient::getPDSStatus(const MinasInput input) const
   }
 }
 
+PDS_OPERATION MinasClient::getPDSOperation(const MinasInput input) const
+{
+  int8 operation_mode = input.operation_mode;
+  switch (operation_mode) {
+  case 0: return NO_MODE_CHANGE;	break;
+  case 1: return PROFILE_POSITION_MODE;	break; // pp
+  case 2: return VELOCITY_MODE;		break; // vl
+  case 3: return PROFILE_VELOCITY_MODE;	break; // pv
+  case 4: return TORQUE_PROFILE_MODE;	break; // tq
+  case 6: return HOMING_MODE;		break; // hm
+  case 7: return INTERPOLATED_POSITION_MODE;	break; // ip
+  case 8: return CYCLIC_SYNCHRONOUS_POSITION_MODE;	break; // csp
+  case 9: return CYCLIC_SYNCHRONOUS_VELOCITY_MODE;	break; // csv
+  case 10: return CYCLIC_SYNCHRONOUS_TORQUE_MODE;	break; // cst
+  }
+}
+
+PDS_STATUS MinasClient::getPDSControl(const MinasInput input) const
+{
+  uint16 statusword = input.statusword;
+}
+
 void MinasClient::printPDSStatus(const MinasInput input) const
 {
+  printf("Statusword(6041h): %04x\n ", input.statusword);
   switch ( getPDSStatus(input) ) {
     case NOT_READY:
       printf("Not ready to switch on\n");
@@ -249,6 +272,121 @@ void MinasClient::printPDSStatus(const MinasInput input) const
       printf("Unknown status %04x\n", input.statusword);
       break;
     }
+  if ( input.statusword & 0x0800 ) {
+    printf(" Internal limit active\n");
+  }
+  switch ( getPDSOperation(input) ) {
+  case PROFILE_POSITION_MODE:
+    if ( (input.statusword & 0x3400) | 0x2000 ) {
+      printf(" Following error\n");
+    }
+    if ( (input.statusword & 0x3400) | 0x1000 ) {
+      printf(" Set-point acknowledge\n");
+    }
+    if ( (input.statusword & 0x3400) | 0x0400 ) {
+      printf(" Target reached\n");
+    }
+    break;
+  case VELOCITY_MODE:
+    break;
+  case PROFILE_VELOCITY_MODE:
+    if ( (input.statusword & 0x3400) | 0x2000 ) {
+      printf(" Max slippage error (Not supported)\n");
+    }
+    if ( (input.statusword & 0x3400) | 0x1000 ) {
+      printf(" Speed\n");
+    }
+    if ( (input.statusword & 0x3400) | 0x0400 ) {
+      printf(" Target reached\n");
+    }
+    break;
+  case TORQUE_PROFILE_MODE:
+    if ( (input.statusword & 0x3400) | 0x0400 ) {
+      printf(" Target reached\n");
+    }
+    break;
+  case HOMING_MODE:
+    if ( (input.statusword & 0x3400) | 0x2000 ) {
+      printf(" Homing error\n");
+    }
+    if ( (input.statusword & 0x3400) | 0x1000 ) {
+      printf(" Homing attained\n");
+    }
+    if ( (input.statusword & 0x3400) | 0x0400 ) {
+      printf(" Target reached\n");
+    }
+    break;
+  case INTERPOLATED_POSITION_MODE:
+    if ( (input.statusword & 0x3400) | 0x1000 ) {
+      printf(" Ip mode active\n");
+    }
+    if ( (input.statusword & 0x3400) | 0x0400 ) {
+      printf(" Target reached\n");
+    }
+    break;
+  case CYCLIC_SYNCHRONOUS_POSITION_MODE:
+    if ( (input.statusword & 0x3400) | 0x2000 ) {
+      printf(" Following error\n");
+    }
+    if ( (input.statusword & 0x3400) | 0x1000 ) {
+      printf(" Drive follows command value\n");
+    }
+    break;
+  case CYCLIC_SYNCHRONOUS_VELOCITY_MODE:
+    if ( (input.statusword & 0x3400) | 0x1000 ) {
+      printf(" Drive follows command value\n");
+    }
+    break;
+  case CYCLIC_SYNCHRONOUS_TORQUE_MODE:
+    if ( (input.statusword & 0x3400) | 0x1000 ) {
+      printf(" Drive follows command value\n");
+    }
+    break;
+  }
+}
+
+void MinasClient::printPDSOperation(const MinasInput input) const
+{
+  printf("Mode of operation(6061h): %04x\n ", input.operation_mode);
+  switch ( getPDSOperation(input) ) {
+  case NO_MODE_CHANGE:
+    printf("No mode change / no mode assigned\n");
+    break;
+  case PROFILE_POSITION_MODE:
+    printf("Profile position mode\n");
+    break;
+  case VELOCITY_MODE:
+    printf("Velocity mode\n");
+    break;
+  case PROFILE_VELOCITY_MODE:
+    printf("Profile velocity mode\n");
+    break;
+  case TORQUE_PROFILE_MODE:
+    printf("Torque profile mode\n");
+    break;
+  case HOMING_MODE:
+    printf("Homing mode\n");
+    break;
+  case INTERPOLATED_POSITION_MODE:
+    printf("Interpolated position mode\n");
+    break;
+  case CYCLIC_SYNCHRONOUS_POSITION_MODE:
+    printf("Cyclic synchronous position mode\n");
+    break;
+  case CYCLIC_SYNCHRONOUS_VELOCITY_MODE:
+    printf("Cyclic synchronous velocity mode\n");
+    break;
+  case CYCLIC_SYNCHRONOUS_TORQUE_MODE:
+    printf("Cyclic synchronous torque mode\n");
+    break;
+  default:
+    printf("Reserved %04x\n", input.operation_mode);
+    break;
+  }
+}
+
+void MinasClient::printPDSControl(const MinasInput input) const
+{
 }
 
 void MinasClient::setTrqueForEmergencyStop(double val)
