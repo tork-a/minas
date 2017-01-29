@@ -424,4 +424,20 @@ void MinasClient::setProfileVelocity(uint32_t val)
   manager_.writeSDO<uint32_t>(slave_no_, 0x6081, 0x00, u32val);
 }
 
+void MinasClient::setInterpolationTimePeriod(uint32_t val)
+{
+  if ( val != 250000 &&
+       val != 500000 &&
+       val != 1000000 &&
+       val != 2000000 &&
+       val != 3000000) {
+    fprintf(stderr, "setInterpolatinTimePeriod(%d) must be ether of 250000, 500000, 1000000, 2000000, 4000000\n", val);
+      return;
+  }
+  manager_.writeSDO<uint32_t>(slave_no_, 0x1c32, 0x02, val);
+  uint8_t u8val;
+  u8val = manager_.readSDO<uint8_t>(slave_no_, 0x60c2, 0x01);
+  printf("60c2h: interpolation time period value %d\n", u8val);
+}
+
 } // end of minas_control namespace
