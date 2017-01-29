@@ -334,6 +334,19 @@ uint8_t EtherCatManager::writeSDO(int slave_no, uint16_t index, uint8_t subidx, 
   return ret;
 }
 
+template <typename T>
+T EtherCatManager::readSDO(int slave_no, uint16_t index, uint8_t subidx) const
+{
+  int ret, l;
+  T val;
+  l = sizeof(val);
+  ret = ec_SDOread(slave_no, index, subidx, FALSE, &l, &val, EC_TIMEOUTRXM);
+  if ( ret != 0 ) {
+    fprintf(stderr, "Failed to read from slave_no:%d, index:%d, subidx:%d\n", slave_no, index, subidx);
+  }
+  return val;
+}
+
 template uint8_t EtherCatManager::writeSDO<int> (int slave_no, uint16_t index, uint8_t subidx, int value) const;
 template uint8_t EtherCatManager::writeSDO<short> (int slave_no, uint16_t index, uint8_t subidx, short value) const;
 template uint8_t EtherCatManager::writeSDO<long> (int slave_no, uint16_t index, uint8_t subidx, long value) const;
@@ -341,6 +354,14 @@ template uint8_t EtherCatManager::writeSDO<unsigned int> (int slave_no, uint16_t
 template uint8_t EtherCatManager::writeSDO<unsigned short> (int slave_no, uint16_t index, uint8_t subidx, unsigned short value) const;
 template uint8_t EtherCatManager::writeSDO<unsigned long> (int slave_no, uint16_t index, uint8_t subidx, unsigned long value) const;
 
+template char EtherCatManager::readSDO<char> (int slave_no, uint16_t index, uint8_t subidx) const;
+template int EtherCatManager::readSDO<int> (int slave_no, uint16_t index, uint8_t subidx) const;
+template short EtherCatManager::readSDO<short> (int slave_no, uint16_t index, uint8_t subidx) const;
+template long EtherCatManager::readSDO<long> (int slave_no, uint16_t index, uint8_t subidx) const;
+template unsigned char EtherCatManager::readSDO<unsigned char> (int slave_no, uint16_t index, uint8_t subidx) const;
+template unsigned int EtherCatManager::readSDO<unsigned int> (int slave_no, uint16_t index, uint8_t subidx) const;
+template unsigned short EtherCatManager::readSDO<unsigned short> (int slave_no, uint16_t index, uint8_t subidx) const;
+template unsigned long EtherCatManager::readSDO<unsigned long> (int slave_no, uint16_t index, uint8_t subidx) const;
 
 }
 
