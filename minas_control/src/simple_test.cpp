@@ -64,28 +64,33 @@ int main(int argc, char *argv[])
       break;
     }
   }
-  if (argc > 1)
-    {      
-      /* start slaveinfo */
-      ethercat::EtherCatManager manager(ifname);
-      minas_control::MinasClient client(manager, 1);
+  /* start slaveinfo */
+  ethercat::EtherCatManager manager(ifname);
+  std::vector<minas_control::MinasClient *> clients;
+  for (int i = 0; i < manager.getNumClinets(); i++ )
+    {
+      clients.push_back(new minas_control::MinasClient(manager, i+1));
+    }
 
+  for (std::vector<minas_control::MinasClient*>::iterator it = clients.begin(); it != clients.end(); ++it)
+    {
+      minas_control::MinasClient* client = (*it);
       // clear error
-      client.reset();
+      client->reset();
 
       // set paramete from PANATERM test program
-      client.setTrqueForEmergencyStop(100); // 100%
-      client.setOverLoadLevel(50);          // 50%
-      client.setOverSpeedLevel(120);        // r/min
-      client.setMotorWorkingRange(0.1);     // 0.1
+      client->setTrqueForEmergencyStop(100); // 100%
+      client->setOverLoadLevel(50);          // 50%
+      client->setOverSpeedLevel(120);        // r/min
+      client->setMotorWorkingRange(0.1);     // 0.1
 
-      client.setInterpolationTimePeriod(4000);     // 4 msec
+      client->setInterpolationTimePeriod(4000);     // 4 msec
 
       // servo on
-      client.servoOn();
+      client->servoOn();
 
       // get current positoin
-      minas_control::MinasInput input = client.readInputs();
+      minas_control::MinasInput input = client->readInputs();
       int32 current_position = input.position_actual_value;
 
       // set target position
@@ -110,27 +115,33 @@ int main(int argc, char *argv[])
       //output.operation_mode = 0x01; // (pp) position profile mode
 
       // set profile velocity
-      client.setProfileVelocity(0x20000000);
+      client->setProfileVelocity(0x20000000);
 
       // pp control model setup (see statusword(6041.h) 3) p.107)
-      client.writeOutputs(output);
+      client->writeOutputs(output);
       while ( ! (input.statusword & 0x1000) ) {// bit12 (set-point-acknowledge)
-	input = client.readInputs();
+	input = client->readInputs();
       }
       output.controlword   &= ~0x0010; // clear new-set-point (bit4)
-      client.writeOutputs(output);
-
-      // 4ms in nanoseconds
-      double period = 4e+6;
-      // get curren ttime
-     struct timespec tick;
-      clock_gettime(CLOCK_REALTIME, &tick);
-      timespecInc(tick, period);
+      client->writeOutputs(output);
 
       printf("target position = %08x\n", output.target_position);
-      for (int i = 0; i <= 2000; i++ ) {
-	input = client.readInputs();
-	if ( i % 10 == 0 )
+    }
+
+  // 4ms in nanoseconds
+  double period = 4e+6;
+  // get curren ttime
+  struct timespec tick;
+  clock_gettime(CLOCK_REALTIME, &tick);
+  timespecInc(tick, period);
+
+  for (int i = 0; i <= 2000; i++ ) {
+    for (std::vector<minas_control::MinasClient*>::iterator it = clients.begin(); it != clients.end(); ++it)
+      {
+	minas_control::MinasClient* client = (*it);
+	minas_control::MinasInput input = client->readInputs();
+	minas_control::MinasOutput output = client->readOutputs();
+	if ( i % 10 == 0)
 	  {
 	    printf("err = %04x, ctrl %04x, status %04x, op_mode = %2d, pos = %08x, vel = %08x, tor = %08x\n",
 		   input.error_code, output.controlword, input.statusword, input.operation_mode, input.position_actual_value, input.velocity_actual_value, input.torque_actual_value);
@@ -167,29 +178,31 @@ int main(int argc, char *argv[])
 	{
 	  output.position_offset = 0x80000*sin(i/200.0);
 	}
+	client->writeOutputs(output);
+      } // for clients
 
-	//usleep(4*1000);
-	timespecInc(tick, period);
-	// check overrun
-	struct timespec before;
-	clock_gettime(CLOCK_REALTIME, &before);
-	double overrun_time = (before.tv_sec + double(before.tv_nsec)/NSEC_PER_SECOND) -  (tick.tv_sec + double(tick.tv_nsec)/NSEC_PER_SECOND);
-	if (overrun_time > 0.0)
-	  {
-	    fprintf(stderr, "  overrun: %f", overrun_time);
-	  }
-	clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &tick, NULL);
-	client.writeOutputs(output);
+    //usleep(4*1000);
+    timespecInc(tick, period);
+    // check overrun
+    struct timespec before;
+    clock_gettime(CLOCK_REALTIME, &before);
+    double overrun_time = (before.tv_sec + double(before.tv_nsec)/NSEC_PER_SECOND) -  (tick.tv_sec + double(tick.tv_nsec)/NSEC_PER_SECOND);
+    if (overrun_time > 0.0)
+      {
+	fprintf(stderr, "  overrun: %f", overrun_time);
       }
-      client.printPDSStatus(input);
-      client.printPDSOperation(input);
-      client.servoOff();
-    }
-  else
+    clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &tick, NULL);
+  }
+
+  for (std::vector<minas_control::MinasClient *>::iterator it = clients.begin(); it != clients.end(); ++it)
     {
-      printf("Usage: simple_test ifname1\nifname = eth0 for example\n");
-    }   
-   
+      minas_control::MinasClient* client = (*it);
+      minas_control::MinasInput input = client->readInputs();
+      client->printPDSStatus(input);
+      client->printPDSOperation(input);
+      client->servoOff();
+    }
+
   printf("End program\n");
 
   return 0;
