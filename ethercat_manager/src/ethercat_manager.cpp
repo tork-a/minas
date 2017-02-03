@@ -350,6 +350,11 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
   return true;
 }
 
+int EtherCatManager::getNumClinets() const
+{
+  return ec_slavecount;
+}
+
 void EtherCatManager::write(int slave_no, uint8_t channel, uint8_t value)
 {
   boost::mutex::scoped_lock lock(iomap_mutex_);

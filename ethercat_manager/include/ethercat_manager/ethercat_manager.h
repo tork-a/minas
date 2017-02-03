@@ -127,6 +127,11 @@ public:
   template <typename T>
   T readSDO(int slave_no, uint16_t index, uint8_t subidx) const;
 
+  /**
+   * \brief get the number of clients
+   */
+  int getNumClinets() const;
+
 private:
   bool initSoem(const std::string& ifname);
 
