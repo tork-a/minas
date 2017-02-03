@@ -399,8 +399,8 @@ T EtherCatManager::readSDO(int slave_no, uint16_t index, uint8_t subidx) const
   T val;
   l = sizeof(val);
   ret = ec_SDOread(slave_no, index, subidx, FALSE, &l, &val, EC_TIMEOUTRXM);
-  if ( ret != 0 ) {
-    fprintf(stderr, "Failed to read from slave_no:%d, index:0x%04x, subidx:0x%02x\n", slave_no, index, subidx);
+  if ( ret <= 0 ) { // ret = Workcounter from last slave response
+    fprintf(stderr, "Failed to read from ret:%d, slave_no:%d, index:0x%04x, subidx:0x%02x\n", ret, slave_no, index, subidx);
   }
   return val;
 }
