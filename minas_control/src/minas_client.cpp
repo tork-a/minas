@@ -38,7 +38,9 @@ MinasClient::MinasClient(ethercat::EtherCatManager& manager, int slave_no)
 
 void MinasClient::writeOutputs(const MinasOutput& output)
 {
-  uint8_t map[21] = {0}; // array containing all 15 output registers
+  // Default PDO Mapping 4 168 bit = 21  byte
+  // PDO Mapping 4 + offset 200 bit = 25  byte
+  uint8_t map[25] = {0}; // array containing all 15 output registers
 
   map[0] = (output.controlword) & 0x00ff;
   map[1] = (output.controlword >> 8) & 0x00ff;
@@ -61,8 +63,12 @@ void MinasClient::writeOutputs(const MinasOutput& output)
   map[18] = (output.target_velocity >>  8) & 0x00ff;
   map[19] = (output.target_velocity >> 16) & 0x00ff;
   map[20] = (output.target_velocity >> 24) & 0x00ff;
+  map[21] = (output.position_offset) & 0x00ff;
+  map[22] = (output.position_offset >>  8) & 0x00ff;
+  map[23] = (output.position_offset >> 16) & 0x00ff;
+  map[24] = (output.position_offset >> 24) & 0x00ff;
 
-  for (unsigned i = 0; i < 21; ++i)
+  for (unsigned i = 0; i < 25; ++i)
   {
     manager_.write(slave_no_, i, map[i]);
   }
@@ -90,7 +96,6 @@ MinasInput MinasClient::readInputs() const
   if (input.error_code >> 8 == 0xff) {
     printf("ERROR : %d\n", (input.error_code)&0x00ff);
   }
-
   return input;
 }
 
@@ -122,6 +127,7 @@ void MinasClient::reset()
   MinasOutput output;
   memset(&output, 0x00, sizeof(MinasOutput));
   output.controlword = 0x0080; // fault reset
+  output.operation_mode = 0x01; // position profile mode
   writeOutputs(output);
 
   while ( input.error_code != 0 ) {
