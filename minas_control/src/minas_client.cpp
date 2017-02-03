@@ -104,16 +104,21 @@ MinasOutput MinasClient::readOutputs() const
 
   MinasOutput output;
 
-  uint8_t map[9];
-  for (unsigned i = 0; i < 9; ++i)
+  uint8_t map[25];
+  for (unsigned i = 0; i < 25; ++i)
   {
     map[i] = manager_.readOutput(slave_no_, i);
   }
 
   output.controlword			= *(uint16 *)(map+0);
   output.operation_mode			= *(uint8  *)(map+2);
-  output.target_position		= *(uint32 *)(map+3);
-  output.touch_probe_function		= *(uint16 *)(map+7);
+  output.target_torque			= *(uint16 *)(map+3);
+  output.max_torque			= *(uint16 *)(map+5);
+  output.target_position		= *(uint32 *)(map+7);
+  output.max_motor_speed		= *(uint32 *)(map+11);
+  output.touch_probe_function		= *(uint16 *)(map+15);
+  output.target_velocity		= *(uint32 *)(map+17);
+  output.position_offset		= *(uint32 *)(map+21);
 
   return output;
 }
