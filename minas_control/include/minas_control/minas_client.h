@@ -163,10 +163,10 @@ public:
   void setProfileVelocity(uint32_t val);
 
   /*
-   * \brief set Interpolation Time Period 250000, 500000, 1000000, 2000000, 4000000 (1c32h / 02h)
+   * \brief set Interpolation Time Period 250, 500, 1000, 2000, 4000 us
    * \return void
    */
-  void setInterpolationTimePeriod(uint32_t val);
+  void setInterpolationTimePeriod(int us);
 
   /**
    * \brief print status from input data

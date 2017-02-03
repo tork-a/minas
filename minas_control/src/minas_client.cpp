@@ -430,32 +430,29 @@ void MinasClient::setProfileVelocity(uint32_t val)
   manager_.writeSDO<uint32_t>(slave_no_, 0x6081, 0x00, u32val);
 }
 
-void MinasClient::setInterpolationTimePeriod(uint32_t val)
+void MinasClient::setInterpolationTimePeriod(int us)
 {
-  if ( val != 250000 &&
-       val != 500000 &&
-       val != 1000000 &&
-       val != 2000000 &&
-       val != 3000000) {
-    fprintf(stderr, "setInterpolatinTimePeriod(%d) must be ether of 250000, 500000, 1000000, 2000000, 4000000\n", val);
-      return;
+  uint32_t u32val;
+  uint8_t u8val;
+  switch ( us ) {
+  case  250: u32val =  250000; u8val = 25; break;
+  case  500: u32val =  500000; u8val =  5; break;
+  case 1000: u32val = 1000000; u8val =  1; break;
+  case 2000: u32val = 2000000; u8val =  2; break;
+  case 4000: u32val = 4000000; u8val =  4; break;
+  default:
+    fprintf(stderr, "setInterpolatinTimePeriod(%d) must be ether of 250, 500, 1000, 2000, 4000\n", us);
+    return;
   }
   int ret = 0;
-  ret += manager_.writeSDO<uint32_t>(slave_no_, 0x1c32, 0x02, val);
-  ret += manager_.writeSDO<uint32_t>(slave_no_, 0x1c33, 0x02, val);
-  printf("1c32/1c33 : set interpolation time period %d us (%d)\n", val/1000, ret);
-  uint8_t u8val;
+  ret += manager_.writeSDO<uint32_t>(slave_no_, 0x1c32, 0x02, u32val);
+  ret += manager_.writeSDO<uint8_t>(slave_no_, 0x60c2, 0x01, u8val);
+  printf("Set interpolation time period %d us (%d/%d)\n", us, u32val, u8val, ret);
+
+  u32val = manager_.readSDO<uint32_t>(slave_no_, 0x1c32, 0x02);
   u8val = manager_.readSDO<uint8_t>(slave_no_, 0x60c2, 0x01);
-  printf("60c2h: interpolation time period value %d ... ", u8val);
-  switch ( u8val ) {
-  case 25: printf("250us\n"); break;
-  case  5: printf("500us\n"); break;
-  case  1: printf("1ms\n"); break;
-  case  2: printf("2ms\n"); break;
-  case  4: printf("4ms\n"); break;
-  default: printf("unknown value\n"); break;
-  }
-  sleep(1);
+  printf("1c32h: cycle time %d\n", u32val);
+  printf("60c2h: interpolation time period value %d\n", u8val);
 }
 
 } // end of minas_control namespace
