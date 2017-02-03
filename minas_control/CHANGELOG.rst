@@ -2,8 +2,8 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.0 (2017-02-04)
+------------------
 * fix readOutput
 * update simple_test for both pp and csp mode
 * fix setInterpolationTimePeriod, now argumetns is [usec]
