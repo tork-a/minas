@@ -227,7 +227,28 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
       return false;
     }
 
+  // extend PDO mapping 4 see p. 53 of SX-DSV02470
+  for( int cnt = 1 ; cnt <= ec_slavecount ; cnt++)
+    {
+      int ret = 0, l;
+      uint8_t num_entries;
+      l = sizeof(num_entries);
+      ret += ec_SDOread(cnt, 0x1603, 0x00, FALSE, &l, &num_entries, EC_TIMEOUTRXM);
+      printf("len = %d\n", num_entries);
+      num_entries = 0;
+      ret += ec_SDOwrite(cnt, 0x1603, 0x00, FALSE, sizeof(num_entries), &num_entries, EC_TIMEOUTRXM);
+      // add position offset (60B0 / 00h / I32)
+      uint32_t mapping;
+      mapping = 0x60B00020;
+      ret += ec_SDOwrite(cnt, 0x1603, 0x09, FALSE, sizeof(mapping), &mapping, EC_TIMEOUTRXM);
+      //
+      num_entries = 9;
+      ret += ec_SDOwrite(cnt, 0x1603, 0x00, FALSE, sizeof(num_entries), &num_entries, EC_TIMEOUTRXM);
+      ret += ec_SDOread(cnt, 0x1603, 0x00, FALSE, &l, &num_entries, EC_TIMEOUTRXM);
+      printf("len = %d\n", num_entries);
+    }
 
+  // use PDO mapping 4
   for( int cnt = 1 ; cnt <= ec_slavecount ; cnt++)
     {
       int ret = 0, l;
