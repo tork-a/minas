@@ -6,7 +6,7 @@
 
   <maintainer email="534o@opensource-robotics.tokyo.jp">Tokyo Opensource Robotics Developer 534</maintainer>
 
-  <license>BSD</license>
+  <license>GPL</license>
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>ethercat_manager</build_depend>
