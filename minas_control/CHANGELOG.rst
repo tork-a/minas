@@ -2,6 +2,14 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* doc: segmentation fault no longer occour
+* update doc for step 3/4
+* minas_control: change LICENSE to GPL
+* simple_client: support multiple clients
+* Contributors: Tokyo Opensource Robotics Developer 534
+
 0.2.0 (2017-02-04)
 ------------------
 * fix readOutput

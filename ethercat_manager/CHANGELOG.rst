@@ -2,6 +2,9 @@
 Changelog for package ethercat_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.2.0 (2017-02-04)
 ------------------
 * return number of ether cat clients
