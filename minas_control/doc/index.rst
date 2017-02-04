@@ -212,7 +212,6 @@ To run `simple_test` with pp mode, use `-p` option.
   Switched on
   Ready to switch on
   Switch on disabled
-  Segmentation fault
 
 If you run `simple_test` with `-c` option, it will servo on, rotate about 180 degree back and forth with sin curve and servo off. Basic flow of the cpp program as follows.
 
@@ -248,9 +247,6 @@ If you run `simple_test` with `-c` option, it will servo on, rotate about 180 de
     timespecInc(tick, period);
     clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &tick, NULL);
   }
-
-Note that at this moment, this program exit with `Segmentaiton Fault`. That is expected behavior and you do not have to worried about that.
-
 
 reset
 -----
