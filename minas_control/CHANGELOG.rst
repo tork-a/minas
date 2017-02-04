@@ -2,8 +2,8 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.2.1 (2017-02-04)
+------------------
 * doc: segmentation fault no longer occour
 * update doc for step 3/4
 * minas_control: change LICENSE to GPL
