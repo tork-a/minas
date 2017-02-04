@@ -55,7 +55,7 @@ MINAS-A5B Control Tools
 
 Before you start we  have to configure `SI1` and `SI2` input selection, Please chenge No. 4.01 from default setting `818181h` to `010101h` and No 4.02 from `28282h` to `020202h` using `PANATERM`_, see page 13 of the `Manual`_.
 
-First new need to know the network adapter neme for the EtherCAT netwok, `ifconfig` will give you the list of network adpater of your fomputer, for example, at a folloiwng case, eth0 is your EtherCAT network and we'll use `eth0` here after, if you have different adapter name, please use that neme when you run the application.
+First new need to know the network adapter neme for the EtherCAT netwok, `ifconfig` will give you the list of network adpater of your fomputer, for example, at a following case, eth0 is your EtherCAT network and we'll use `eth0` here after, if you have different adapter name, please use that neme when you run the application.
 
 .. code-block:: bash
 
@@ -90,7 +90,7 @@ First new need to know the network adapter neme for the EtherCAT netwok, `ifconf
 slave_info
 ----------
 
-Now let's run `salve_info` to show current configuration of your EtherCAT netwrok. Please change `eth4` 
+Now let's run `salve_info` to show current configuration of your EtherCAT network. Please change `eth4`.
 
 .. code-block:: bash
 
@@ -121,11 +121,56 @@ Now let's run `salve_info` to show current configuration of your EtherCAT netwro
 simple_test
 -----------
 
-Then let's move to next step. The `simple_test` will servo on, rotate about 360 degree and servo off. The `simple_test` program basically follow the instruction described in the manual, i.e Start up guide in p.3 and Motion of `pp` control mode in p. 107.
+Then let's move to next step. The `simple_test` is the example program to control motors. '-h' or '--help' option will show the usages of this program.
 
 .. code-block:: bash
 
-  $ rosrun minas_control simple_test eth0
+  $ rosrun minas_control simple_test -h
+  MINAS Simple Test using SOEM (Simple Open EtherCAT Master)
+  Usage: simple_test [options]
+    Available options
+      -i, --interface     NIC interface name for EtherCAT network
+      -p, --position_mode Sample program using Position Profile (pp) mode (Default)
+      -c, --cycliec_mode  Sample program using cyclic synchronous position(csp) mode
+      -h, --help          Print this message and exit
+
+On default settings, `simple_test` will servo on, rotate about 360 degree and servo off. The `simple_test` program basically follow the instruction described in the manual, i.e Start up guide in p.3 and Motion of `pp` control mode in p. 107. Basic flow of the cpp program as follows.
+
+.. code-block:: cpp
+
+  minas_control::MinasInput input = client->readInputs();
+  int32 current_position = input.position_actual_value;
+
+  // set target position
+  minas_control::MinasOutput output;
+  output.target_position = (current_position > 0)?
+              (current_position - 0x100000):(current_position + 0x100000);
+
+  output.max_motor_speed = 120;  // rad/min
+  output.target_torque = 500;    // 0% (unit 0.1%)
+  output.max_torque    = 500;    // 50% (unit 0.1%)
+  output.controlword   = 0x001f; // move to operation enabled +
+                                 // new-set-point (bit4) +
+                                 //  change set immediately (bit5)
+
+  output.operation_mode = 0x01; // (pp) position profile mode
+
+  // set profile velocity
+  client->setProfileVelocity(0x20000000);
+
+  // pp control model setup (see statusword(6041.h) 3) p.107)
+  client->writeOutputs(output);
+  while ( ! (input.statusword & 0x1000) ) {// bit12 (set-point-acknowledge)
+    input = client->readInputs();
+  }
+  output.controlword   &= ~0x0010; // clear new-set-point (bit4)
+  client->writeOutputs(output);
+
+To run `simple_test` with pp mode, use `-p` option.
+
+.. code-block:: bash
+
+  $ rosrun minas_control simple_test -p -i eth0
   SOEM (Simple Open EtherCAT Master)
   Simple test
   Initializing etherCAT master
@@ -168,6 +213,41 @@ Then let's move to next step. The `simple_test` will servo on, rotate about 360 
   Ready to switch on
   Switch on disabled
   Segmentation fault
+
+If you run `simple_test` with `-c` option, it will servo on, rotate about 180 degree back and forth with sin curve and servo off. Basic flow of the cpp program as follows.
+
+.. code-block:: cpp
+
+  client->setInterpolationTimePeriod(4000);     // 4 msec
+
+  minas_control::MinasInput input = client->readInputs();
+  int32 current_position = input.position_actual_value;
+
+  // set target position
+  minas_control::MinasOutput output;
+  output.target_position = current_position;
+
+  output.max_motor_speed = 120;  // rad/min
+  output.target_torque = 500;    // 0% (unit 0.1%)
+  output.max_torque    = 500;    // 50% (unit 0.1%)
+  output.controlword   = 0x001f; // move to operation enabled + new-set-point (bit4) + change set immediately (bit5)
+
+  output.operation_mode = 0x08; // (csp) cyclic synchronous position mode
+
+  client->writeOutputs(output);
+
+  struct timespec tick;
+  clock_gettime(CLOCK_REALTIME, &tick);
+
+  while ( 1 ) {
+
+    output.position_offset = 0x80000*sin(i/200.0);
+    client->writeOutputs(output);
+
+    // sleep for next tick
+    timespecInc(tick, period);
+    clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &tick, NULL);
+  }
 
 Note that at this moment, this program exit with `Segmentaiton Fault`. That is expected behavior and you do not have to worried about that.
 
