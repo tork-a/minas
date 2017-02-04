@@ -200,7 +200,26 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
   printf("SOEM found and configured %d slaves\n", ec_slavecount);
 
   /*
-    SET PDO maping 4
+    SET PDO maping 4    SX-DSV02470 p.52
+			Index	  Size(bit)	Name
+    RxPDO (1603h)	6040h 00h 16 Controlword
+			6060h 00h  8 Modes of operation
+			6071h 00h 16 Target Torque
+			6072h 00h 16 Max torque
+			607Ah 00h 32 Target Position
+			6080h 00h 32 Max motor speed
+			60B8h 00h 16 Touch probe function
+			60FFh 00h 32 Target Velocity
+    TxPDO (1A03h)
+			603Fh 00h 16 Error code
+			6041h 00h 16 Statusword
+			6061h 00h  8 Modes of operation display
+			6064h 00h 32 Position actual value
+			606Ch 00h 32 Velocity actual value
+			6077h 00h 16 Torque actual value
+			60B9h 00h 16 Touch probe status
+			60BAh 00h 32 Touch probe pos1 pos val
+			60FDh 00h 32 Digital inputs
    */
   if (ec_statecheck(0, EC_STATE_PRE_OP, EC_TIMEOUTSTATE*4) != EC_STATE_PRE_OP)
     {
@@ -208,7 +227,28 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
       return false;
     }
 
+  // extend PDO mapping 4 see p. 53 of SX-DSV02470
+  for( int cnt = 1 ; cnt <= ec_slavecount ; cnt++)
+    {
+      int ret = 0, l;
+      uint8_t num_entries;
+      l = sizeof(num_entries);
+      ret += ec_SDOread(cnt, 0x1603, 0x00, FALSE, &l, &num_entries, EC_TIMEOUTRXM);
+      printf("len = %d\n", num_entries);
+      num_entries = 0;
+      ret += ec_SDOwrite(cnt, 0x1603, 0x00, FALSE, sizeof(num_entries), &num_entries, EC_TIMEOUTRXM);
+      // add position offset (60B0 / 00h / I32)
+      uint32_t mapping;
+      mapping = 0x60B00020;
+      ret += ec_SDOwrite(cnt, 0x1603, 0x09, FALSE, sizeof(mapping), &mapping, EC_TIMEOUTRXM);
+      //
+      num_entries = 9;
+      ret += ec_SDOwrite(cnt, 0x1603, 0x00, FALSE, sizeof(num_entries), &num_entries, EC_TIMEOUTRXM);
+      ret += ec_SDOread(cnt, 0x1603, 0x00, FALSE, &l, &num_entries, EC_TIMEOUTRXM);
+      printf("len = %d\n", num_entries);
+    }
 
+  // use PDO mapping 4
   for( int cnt = 1 ; cnt <= ec_slavecount ; cnt++)
     {
       int ret = 0, l;
@@ -288,8 +328,31 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
       printf(" Configured address: %4.4x\n", ec_slave[cnt].configadr);
     }
 
+  for( int cnt = 1 ; cnt <= ec_slavecount ; cnt++)
+    {
+      int ret = 0, l;
+      uint16_t sync_mode;
+      uint32_t cycle_time;
+      uint32_t minimum_cycle_time;
+      uint32_t sync0_cycle_time;
+      l = sizeof(sync_mode);
+      ret += ec_SDOread(cnt, 0x1c32, 0x01, FALSE, &l, &sync_mode, EC_TIMEOUTRXM);
+      l = sizeof(cycle_time);
+      ret += ec_SDOread(cnt, 0x1c32, 0x01, FALSE, &l, &cycle_time, EC_TIMEOUTRXM);
+      l = sizeof(minimum_cycle_time);
+      ret += ec_SDOread(cnt, 0x1c32, 0x05, FALSE, &l, &minimum_cycle_time, EC_TIMEOUTRXM);
+      l = sizeof(sync0_cycle_time);
+      ret += ec_SDOread(cnt, 0x1c32, 0x0a, FALSE, &l, &sync0_cycle_time, EC_TIMEOUTRXM);
+      printf("PDO syncmode %02x, cycle time %d ns (min %d), sync0 cycle time %d ns, ret = %d\n", sync_mode, cycle_time, minimum_cycle_time, sync0_cycle_time, ret);
+    }
+
   printf("\nFinished configuration successfully\n");
   return true;
+}
+
+int EtherCatManager::getNumClinets() const
+{
+  return ec_slavecount;
 }
 
 void EtherCatManager::write(int slave_no, uint8_t channel, uint8_t value)
@@ -334,13 +397,36 @@ uint8_t EtherCatManager::writeSDO(int slave_no, uint16_t index, uint8_t subidx, 
   return ret;
 }
 
+template <typename T>
+T EtherCatManager::readSDO(int slave_no, uint16_t index, uint8_t subidx) const
+{
+  int ret, l;
+  T val;
+  l = sizeof(val);
+  ret = ec_SDOread(slave_no, index, subidx, FALSE, &l, &val, EC_TIMEOUTRXM);
+  if ( ret <= 0 ) { // ret = Workcounter from last slave response
+    fprintf(stderr, "Failed to read from ret:%d, slave_no:%d, index:0x%04x, subidx:0x%02x\n", ret, slave_no, index, subidx);
+  }
+  return val;
+}
+
+template uint8_t EtherCatManager::writeSDO<char> (int slave_no, uint16_t index, uint8_t subidx, char value) const;
 template uint8_t EtherCatManager::writeSDO<int> (int slave_no, uint16_t index, uint8_t subidx, int value) const;
 template uint8_t EtherCatManager::writeSDO<short> (int slave_no, uint16_t index, uint8_t subidx, short value) const;
 template uint8_t EtherCatManager::writeSDO<long> (int slave_no, uint16_t index, uint8_t subidx, long value) const;
+template uint8_t EtherCatManager::writeSDO<unsigned char> (int slave_no, uint16_t index, uint8_t subidx, unsigned char value) const;
 template uint8_t EtherCatManager::writeSDO<unsigned int> (int slave_no, uint16_t index, uint8_t subidx, unsigned int value) const;
 template uint8_t EtherCatManager::writeSDO<unsigned short> (int slave_no, uint16_t index, uint8_t subidx, unsigned short value) const;
 template uint8_t EtherCatManager::writeSDO<unsigned long> (int slave_no, uint16_t index, uint8_t subidx, unsigned long value) const;
 
+template char EtherCatManager::readSDO<char> (int slave_no, uint16_t index, uint8_t subidx) const;
+template int EtherCatManager::readSDO<int> (int slave_no, uint16_t index, uint8_t subidx) const;
+template short EtherCatManager::readSDO<short> (int slave_no, uint16_t index, uint8_t subidx) const;
+template long EtherCatManager::readSDO<long> (int slave_no, uint16_t index, uint8_t subidx) const;
+template unsigned char EtherCatManager::readSDO<unsigned char> (int slave_no, uint16_t index, uint8_t subidx) const;
+template unsigned int EtherCatManager::readSDO<unsigned int> (int slave_no, uint16_t index, uint8_t subidx) const;
+template unsigned short EtherCatManager::readSDO<unsigned short> (int slave_no, uint16_t index, uint8_t subidx) const;
+template unsigned long EtherCatManager::readSDO<unsigned long> (int slave_no, uint16_t index, uint8_t subidx) const;
 
 }
 

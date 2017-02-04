@@ -2,6 +2,17 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.0 (2017-02-04)
+------------------
+* fix readOutput
+* update simple_test for both pp and csp mode
+* fix setInterpolationTimePeriod, now argumetns is [usec]
+* add PDO mapping 4 + position offset, use cyclic synchronous position(csp) mode
+* setInterpolationTimePeriod: display more info
+* add setInterpolationTimePeriod
+* add getPDSOperation, getPDSControl, getPDSStatus
+* Contributors: Tokyo Opensource Robotics Developer 534
+
 0.1.2 (2017-01-16)
 ------------------
 * conf.py : add C++ API feature, but not enable due to bad layout

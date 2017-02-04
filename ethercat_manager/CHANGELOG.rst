@@ -2,6 +2,17 @@
 Changelog for package ethercat_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.2.0 (2017-02-04)
+------------------
+* return number of ether cat clients
+* ec_SDOread fails only when ret is minus
+* use hex to display Failed to read from
+* add position offsset (60b0) to PDO mappoing 4
+* read current SDO syncmode, cycle time
+* add writeSDO(char, unsigned char)
+* add readSDO
+* Contributors: Tokyo Opensource Robotics Developer 534
+
 0.1.2 (2017-01-16)
 ------------------
 * ethercat_manager use pre allcoated iomap\_ to avoid segfault soem/test/ also uses this strategy

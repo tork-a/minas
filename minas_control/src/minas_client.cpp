@@ -38,7 +38,9 @@ MinasClient::MinasClient(ethercat::EtherCatManager& manager, int slave_no)
 
 void MinasClient::writeOutputs(const MinasOutput& output)
 {
-  uint8_t map[21] = {0}; // array containing all 15 output registers
+  // Default PDO Mapping 4 168 bit = 21  byte
+  // PDO Mapping 4 + offset 200 bit = 25  byte
+  uint8_t map[25] = {0}; // array containing all 15 output registers
 
   map[0] = (output.controlword) & 0x00ff;
   map[1] = (output.controlword >> 8) & 0x00ff;
@@ -61,8 +63,12 @@ void MinasClient::writeOutputs(const MinasOutput& output)
   map[18] = (output.target_velocity >>  8) & 0x00ff;
   map[19] = (output.target_velocity >> 16) & 0x00ff;
   map[20] = (output.target_velocity >> 24) & 0x00ff;
+  map[21] = (output.position_offset) & 0x00ff;
+  map[22] = (output.position_offset >>  8) & 0x00ff;
+  map[23] = (output.position_offset >> 16) & 0x00ff;
+  map[24] = (output.position_offset >> 24) & 0x00ff;
 
-  for (unsigned i = 0; i < 21; ++i)
+  for (unsigned i = 0; i < 25; ++i)
   {
     manager_.write(slave_no_, i, map[i]);
   }
@@ -90,7 +96,6 @@ MinasInput MinasClient::readInputs() const
   if (input.error_code >> 8 == 0xff) {
     printf("ERROR : %d\n", (input.error_code)&0x00ff);
   }
-
   return input;
 }
 
@@ -99,16 +104,21 @@ MinasOutput MinasClient::readOutputs() const
 
   MinasOutput output;
 
-  uint8_t map[9];
-  for (unsigned i = 0; i < 9; ++i)
+  uint8_t map[25];
+  for (unsigned i = 0; i < 25; ++i)
   {
     map[i] = manager_.readOutput(slave_no_, i);
   }
 
   output.controlword			= *(uint16 *)(map+0);
   output.operation_mode			= *(uint8  *)(map+2);
-  output.target_position		= *(uint32 *)(map+3);
-  output.touch_probe_function		= *(uint16 *)(map+7);
+  output.target_torque			= *(uint16 *)(map+3);
+  output.max_torque			= *(uint16 *)(map+5);
+  output.target_position		= *(uint32 *)(map+7);
+  output.max_motor_speed		= *(uint32 *)(map+11);
+  output.touch_probe_function		= *(uint16 *)(map+15);
+  output.target_velocity		= *(uint32 *)(map+17);
+  output.position_offset		= *(uint32 *)(map+21);
 
   return output;
 }
@@ -122,6 +132,7 @@ void MinasClient::reset()
   MinasOutput output;
   memset(&output, 0x00, sizeof(MinasOutput));
   output.controlword = 0x0080; // fault reset
+  output.operation_mode = 0x01; // position profile mode
   writeOutputs(output);
 
   while ( input.error_code != 0 ) {
@@ -218,8 +229,31 @@ PDS_STATUS MinasClient::getPDSStatus(const MinasInput input) const
   }
 }
 
+PDS_OPERATION MinasClient::getPDSOperation(const MinasInput input) const
+{
+  int8 operation_mode = input.operation_mode;
+  switch (operation_mode) {
+  case 0: return NO_MODE_CHANGE;	break;
+  case 1: return PROFILE_POSITION_MODE;	break; // pp
+  case 2: return VELOCITY_MODE;		break; // vl
+  case 3: return PROFILE_VELOCITY_MODE;	break; // pv
+  case 4: return TORQUE_PROFILE_MODE;	break; // tq
+  case 6: return HOMING_MODE;		break; // hm
+  case 7: return INTERPOLATED_POSITION_MODE;	break; // ip
+  case 8: return CYCLIC_SYNCHRONOUS_POSITION_MODE;	break; // csp
+  case 9: return CYCLIC_SYNCHRONOUS_VELOCITY_MODE;	break; // csv
+  case 10: return CYCLIC_SYNCHRONOUS_TORQUE_MODE;	break; // cst
+  }
+}
+
+PDS_STATUS MinasClient::getPDSControl(const MinasInput input) const
+{
+  uint16 statusword = input.statusword;
+}
+
 void MinasClient::printPDSStatus(const MinasInput input) const
 {
+  printf("Statusword(6041h): %04x\n ", input.statusword);
   switch ( getPDSStatus(input) ) {
     case NOT_READY:
       printf("Not ready to switch on\n");
@@ -249,6 +283,121 @@ void MinasClient::printPDSStatus(const MinasInput input) const
       printf("Unknown status %04x\n", input.statusword);
       break;
     }
+  if ( input.statusword & 0x0800 ) {
+    printf(" Internal limit active\n");
+  }
+  switch ( getPDSOperation(input) ) {
+  case PROFILE_POSITION_MODE:
+    if ( (input.statusword & 0x3400) | 0x2000 ) {
+      printf(" Following error\n");
+    }
+    if ( (input.statusword & 0x3400) | 0x1000 ) {
+      printf(" Set-point acknowledge\n");
+    }
+    if ( (input.statusword & 0x3400) | 0x0400 ) {
+      printf(" Target reached\n");
+    }
+    break;
+  case VELOCITY_MODE:
+    break;
+  case PROFILE_VELOCITY_MODE:
+    if ( (input.statusword & 0x3400) | 0x2000 ) {
+      printf(" Max slippage error (Not supported)\n");
+    }
+    if ( (input.statusword & 0x3400) | 0x1000 ) {
+      printf(" Speed\n");
+    }
+    if ( (input.statusword & 0x3400) | 0x0400 ) {
+      printf(" Target reached\n");
+    }
+    break;
+  case TORQUE_PROFILE_MODE:
+    if ( (input.statusword & 0x3400) | 0x0400 ) {
+      printf(" Target reached\n");
+    }
+    break;
+  case HOMING_MODE:
+    if ( (input.statusword & 0x3400) | 0x2000 ) {
+      printf(" Homing error\n");
+    }
+    if ( (input.statusword & 0x3400) | 0x1000 ) {
+      printf(" Homing attained\n");
+    }
+    if ( (input.statusword & 0x3400) | 0x0400 ) {
+      printf(" Target reached\n");
+    }
+    break;
+  case INTERPOLATED_POSITION_MODE:
+    if ( (input.statusword & 0x3400) | 0x1000 ) {
+      printf(" Ip mode active\n");
+    }
+    if ( (input.statusword & 0x3400) | 0x0400 ) {
+      printf(" Target reached\n");
+    }
+    break;
+  case CYCLIC_SYNCHRONOUS_POSITION_MODE:
+    if ( (input.statusword & 0x3400) | 0x2000 ) {
+      printf(" Following error\n");
+    }
+    if ( (input.statusword & 0x3400) | 0x1000 ) {
+      printf(" Drive follows command value\n");
+    }
+    break;
+  case CYCLIC_SYNCHRONOUS_VELOCITY_MODE:
+    if ( (input.statusword & 0x3400) | 0x1000 ) {
+      printf(" Drive follows command value\n");
+    }
+    break;
+  case CYCLIC_SYNCHRONOUS_TORQUE_MODE:
+    if ( (input.statusword & 0x3400) | 0x1000 ) {
+      printf(" Drive follows command value\n");
+    }
+    break;
+  }
+}
+
+void MinasClient::printPDSOperation(const MinasInput input) const
+{
+  printf("Mode of operation(6061h): %04x\n ", input.operation_mode);
+  switch ( getPDSOperation(input) ) {
+  case NO_MODE_CHANGE:
+    printf("No mode change / no mode assigned\n");
+    break;
+  case PROFILE_POSITION_MODE:
+    printf("Profile position mode\n");
+    break;
+  case VELOCITY_MODE:
+    printf("Velocity mode\n");
+    break;
+  case PROFILE_VELOCITY_MODE:
+    printf("Profile velocity mode\n");
+    break;
+  case TORQUE_PROFILE_MODE:
+    printf("Torque profile mode\n");
+    break;
+  case HOMING_MODE:
+    printf("Homing mode\n");
+    break;
+  case INTERPOLATED_POSITION_MODE:
+    printf("Interpolated position mode\n");
+    break;
+  case CYCLIC_SYNCHRONOUS_POSITION_MODE:
+    printf("Cyclic synchronous position mode\n");
+    break;
+  case CYCLIC_SYNCHRONOUS_VELOCITY_MODE:
+    printf("Cyclic synchronous velocity mode\n");
+    break;
+  case CYCLIC_SYNCHRONOUS_TORQUE_MODE:
+    printf("Cyclic synchronous torque mode\n");
+    break;
+  default:
+    printf("Reserved %04x\n", input.operation_mode);
+    break;
+  }
+}
+
+void MinasClient::printPDSControl(const MinasInput input) const
+{
 }
 
 void MinasClient::setTrqueForEmergencyStop(double val)
@@ -284,6 +433,31 @@ void MinasClient::setProfileVelocity(uint32_t val)
   // 6091h, unit: pulse, range: 0 - 4294967295, U32
   uint32_t u32val = (uint32_t)val;
   manager_.writeSDO<uint32_t>(slave_no_, 0x6081, 0x00, u32val);
+}
+
+void MinasClient::setInterpolationTimePeriod(int us)
+{
+  uint32_t u32val;
+  uint8_t u8val;
+  switch ( us ) {
+  case  250: u32val =  250000; u8val = 25; break;
+  case  500: u32val =  500000; u8val =  5; break;
+  case 1000: u32val = 1000000; u8val =  1; break;
+  case 2000: u32val = 2000000; u8val =  2; break;
+  case 4000: u32val = 4000000; u8val =  4; break;
+  default:
+    fprintf(stderr, "setInterpolatinTimePeriod(%d) must be ether of 250, 500, 1000, 2000, 4000\n", us);
+    return;
+  }
+  int ret = 0;
+  ret += manager_.writeSDO<uint32_t>(slave_no_, 0x1c32, 0x02, u32val);
+  ret += manager_.writeSDO<uint8_t>(slave_no_, 0x60c2, 0x01, u8val);
+  printf("Set interpolation time period %d us (%d/%d)\n", us, u32val, u8val, ret);
+
+  u32val = manager_.readSDO<uint32_t>(slave_no_, 0x1c32, 0x02);
+  u8val = manager_.readSDO<uint8_t>(slave_no_, 0x60c2, 0x01);
+  printf("1c32h: cycle time %d\n", u32val);
+  printf("60c2h: interpolation time period value %d\n", u8val);
 }
 
 } // end of minas_control namespace

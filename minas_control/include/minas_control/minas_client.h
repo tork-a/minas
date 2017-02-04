@@ -50,29 +50,35 @@ namespace minas_control
 // Position contorl, Velocity COntrol, Torque Controle (Touch proble, torque limit)
 typedef struct {
   // input
-  uint16 error_code;
-  uint16 statusword;
-  uint8  operation_mode;
-  uint32 position_actual_value;
-  uint32 velocity_actual_value;
-  uint16 torque_actual_value;
-  uint16 touch_probe_status;
-  uint32 touch_probe_posl_pos_value;
-  uint32 digital_inputs;
+  uint16 error_code;			// 603Fh : Error code
+  uint16 statusword;			// 6041h : Statusword
+  uint8  operation_mode;		// 6061h : Modes of operation display
+  uint32 position_actual_value;		// 6064h : Position actual value
+  uint32 velocity_actual_value;		// 606Ch : Velocity actual value
+  uint16 torque_actual_value;		// 6077h : Torque actual value
+  uint16 touch_probe_status;		// 60B9h : Touch probe status
+  uint32 touch_probe_posl_pos_value;	// 60BAh : Touch probe pos1 pos value
+  uint32 digital_inputs;		// 60FDh : Digital inputs
 } MinasInput;
 
 typedef struct {
-  uint16 controlword;
-  uint8  operation_mode;
-  uint16 target_torque;
-  uint16 max_torque;
-  uint32 target_position;
-  uint32 max_motor_speed;
-  uint16 touch_probe_function;
-  uint32 target_velocity;
+  uint16 controlword;			// 6040h : Controlword
+  uint8  operation_mode;		// 6060h : Mode of operation
+  uint16 target_torque;			// 6071h : Target Torque
+  uint16 max_torque;			// 6072h : Max Torque
+  uint32 target_position;		// 607Ah : Target Position
+  uint32 max_motor_speed;		// 6080h : Max motor speed
+  uint16 touch_probe_function;		// 60B8h : Touch Probe function
+  uint32 target_velocity;		// 60FFh : Target Velocity
+  uint32 position_offset;		// 60B0h : Position Offset
 } MinasOutput;
 
-typedef enum {NOT_READY, SWITCH_DISABLED, READY_SWITCH, SWITCHED_ON, OPERATION_ENABLED, QUICK_STOP, FAULT_REACTION, FAULT, UNKNOWN} PDS_STATUS;
+typedef enum {NOT_READY, SWITCH_DISABLED, READY_SWITCH, SWITCHED_ON, OPERATION_ENABLED, QUICK_STOP, FAULT_REACTION, FAULT, UNKNOWN} PDS_STATUS;  // Statusword(6041h) SX-DSV02470 p.78
+
+typedef enum {NO_MODE_CHANGE, PROFILE_POSITION_MODE, VELOCITY_MODE, PROFILE_VELOCITY_MODE, TORQUE_PROFILE_MODE, HOMING_MODE, INTERPOLATED_POSITION_MODE, CYCLIC_SYNCHRONOUS_POSITION_MODE, CYCLIC_SYNCHRONOUS_VELOCITY_MODE, CYCLIC_SYNCHRONOUS_TORQUE_MODE} PDS_OPERATION; // Mode of operation(6061h) SX-DSV02470 p.83
+
+ typedef enum {//HALT, FAULT_RESET, ENABLE_OPERATION, QUICK_STOP, ENABLE_VOLTAGE, SWITCH_ON, 
+} PDS_CONTROL; // Controlworld(6040h) SX-DSV02470 p.76
 
 class MinasClient
 {
@@ -156,6 +162,27 @@ public:
    */
   void setProfileVelocity(uint32_t val);
 
+  /*
+   * \brief set Interpolation Time Period 250, 500, 1000, 2000, 4000 us
+   * \return void
+   */
+  void setInterpolationTimePeriod(int us);
+
+  /**
+   * \brief print status from input data
+   */
+  void printPDSStatus(const MinasInput input) const;
+
+  /**
+   * \brief print operation mode from input data
+   */
+  void printPDSOperation(const MinasInput input) const;
+
+  /**
+   * \brief print control status from input data
+   */
+  void printPDSControl(const MinasInput input) const;
+
 private:
   /**
    * \brief get status from input data
@@ -164,9 +191,16 @@ private:
   PDS_STATUS getPDSStatus(const MinasInput input) const;
 
   /**
-   * \brief print status from input data
+   * \brief get operation mode from input data
+   * \return status
    */
-  void printPDSStatus(const MinasInput input) const;
+  PDS_OPERATION getPDSOperation(const MinasInput input) const;
+
+  /**
+   * \brief get control status from input data
+   * \return status
+   */
+  PDS_STATUS getPDSControl(const MinasInput input) const;
 
   ethercat::EtherCatManager& manager_;
   const int slave_no_;
