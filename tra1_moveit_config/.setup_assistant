@@ -1,0 +1,10 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: tra1_description
+    relative_path: urdf/tra1.xacro
+  SRDF:
+    relative_path: config/tra1.srdf
+  CONFIG:
+    author_name: Ryosuke Tajima
+    author_email: ryosuke.tajima@opensource-robotics.tokyo.jp
+    generated_timestamp: 1486991314
