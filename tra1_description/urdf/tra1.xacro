@@ -35,14 +35,6 @@
   <xacro:property name="J5Y_J6Y" value="-0.05"/>
   <xacro:property name="J5Z_J6Z" value="1.3795"/>
 
-  <!-- Used for fixing robot to Gazebo 'base_link' -->
-  <link name="world"/>
-
-  <joint name="fixed" type="fixed">
-    <parent link="world"/>
-    <child link="base_link"/>
-  </joint>
-
   <!-- ==================================================================base_link -->
   <link name="base_link">
     <visual>
