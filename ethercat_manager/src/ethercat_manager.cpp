@@ -32,6 +32,7 @@
 
 #include <unistd.h>
 #include <stdio.h>
+#include <time.h>
 
 #include <boost/ref.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
@@ -50,6 +51,16 @@ namespace
 {
 static const unsigned THREAD_SLEEP_TIME = 1000; // 1 ms
 static const unsigned EC_TIMEOUTMON = 500;
+static const int NSEC_PER_SECOND = 1e+9;
+void timespecInc(struct timespec &tick, int nsec)
+{
+  tick.tv_nsec += nsec;
+  while (tick.tv_nsec >= NSEC_PER_SECOND)
+    {
+      tick.tv_nsec -= NSEC_PER_SECOND;
+      tick.tv_sec++;
+    }
+}
 
 void handleErrors()
 {
@@ -113,6 +124,12 @@ void handleErrors()
 
 void cycleWorker(boost::mutex& mutex, bool& stop_flag)
 {
+  // 1ms in nanoseconds
+  double period = THREAD_SLEEP_TIME * 1000;
+  // get curren ttime
+  struct timespec tick;
+  clock_gettime(CLOCK_REALTIME, &tick);
+  timespecInc(tick, period);
   while (!stop_flag) 
   {
     int expected_wkc = (ec_group[0].outputsWKC * 2) + ec_group[0].inputsWKC;
@@ -128,7 +145,18 @@ void cycleWorker(boost::mutex& mutex, bool& stop_flag)
       handleErrors();
     }
 
-    usleep(THREAD_SLEEP_TIME);
+    // check overrun
+    struct timespec before;
+    clock_gettime(CLOCK_REALTIME, &before);
+    double overrun_time = (before.tv_sec + double(before.tv_nsec)/NSEC_PER_SECOND) -  (tick.tv_sec + double(tick.tv_nsec)/NSEC_PER_SECOND);
+    if (overrun_time > 0.0)
+      {
+	fprintf(stderr, "  overrun: %f\n", overrun_time);
+      }
+    //usleep(THREAD_SLEEP_TIME);
+    clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &tick, NULL);
+    timespecInc(tick, period);
+    //printf("%24.12f %14.10f [msec] %02x %02x %02x %02x\n", tick.tv_sec+double(tick.tv_nsec)/NSEC_PER_SECOND, overrun_time*1000, ec_slave[1].outputs[24], ec_slave[1].outputs[23], ec_slave[1].outputs[22], ec_slave[1].outputs[21]);
   }
 }
 

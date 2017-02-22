@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(minas_control)
 
-find_package(catkin REQUIRED COMPONENTS ethercat_manager soem)
+find_package(catkin REQUIRED COMPONENTS controller_manager transmission_interface hardware_interface sensor_msgs joint_limits_interface trajectory_msgs ethercat_manager soem)
 
 ###################################
 ## catkin specific configuration ##
@@ -24,12 +24,16 @@ include_directories(
 ## Declare a C++ library
 add_library(minas_client src/minas_client.cpp)
 
+## Declare a C++ executable for ROS_CONTROL
+add_executable(main src/main.cpp src/minas_hardware_interface.cpp)
+
 ## Declare a C++ executable
 add_executable(slaveinfo src/slaveinfo.cpp)
 add_executable(simple_test src/simple_test.cpp)
 add_executable(reset src/reset.cpp)
 
 ## Specify libraries to link a library or executable target against
+target_link_libraries(main ${catkin_LIBRARIES} minas_client)
 target_link_libraries(slaveinfo ${catkin_LIBRARIES})
 target_link_libraries(simple_test ${catkin_LIBRARIES} minas_client)
 target_link_libraries(reset ${catkin_LIBRARIES} minas_client)
@@ -38,10 +42,11 @@ function(set_sudo_binary tgt)
   get_target_property(loc ${tgt} "LOCATION")
   string(ASCII 27 ESCAPE)
   add_custom_target(sudo_${tgt}
-    COMMAND sudo -n sh -c 'setcap cap_net_raw+ep ${loc}' || (>&2 echo "${ESCAPE}[31m#\ type\ following\ command\ before\ execute\ reset...\ sudo\ setcap cap_net_raw+ep\ ${loc}${ESCAPE}[0m")
+    COMMAND sudo -n sh -c 'setcap cap_net_raw,cap_ipc_lock=+ep ${loc}' || (>&2 echo "${ESCAPE}[31m#\ type\ following\ command\ before\ execute\ reset...\ sudo\ setcap cap_net_raw,cap_ipc_lock=+ep\ ${loc}${ESCAPE}[0m")
     DEPENDS bin/${tgt})
   add_custom_target(sudo_${tgt}_all ALL DEPENDS sudo_${tgt})
 endfunction()
+set_sudo_binary(main)
 set_sudo_binary(slaveinfo)
 set_sudo_binary(simple_test)
 set_sudo_binary(reset)
@@ -51,7 +56,7 @@ set_sudo_binary(reset)
 #############
 
 ## Mark executables and/or libraries for installation
-install(TARGETS slaveinfo simple_test reset minas_client
+install(TARGETS slaveinfo simple_test reset minas_client main
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
@@ -71,7 +76,7 @@ install(DIRECTORY include/${PROJECT_NAME}/
 # debbuild
 # catkin build minas_control --make-args debbuild
 # ROS_PARALLEL_JOBS='' catkin_make --pkg minas_control -- debbuild
-add_custom_target(debbuild
+add_custom_target(debbuild_${PROJECT_NAME}
   COMMAND sudo -n true || (>&2 echo "debbuild need sudo access to make debs" && exit 1)
   COMMAND bloom-generate rosdebian --os-name ubuntu --os-version trusty --ros-distro indigo
   COMMAND MAKEFLAGS= fakeroot debian/rules binary
@@ -81,7 +86,7 @@ add_custom_target(debbuild
 
 # make docs
 # ROS_PARALLEL_JOBS='' catkin_make --pkg minas_control -- docbuild
-add_custom_target(docbuild
+add_custom_target(docbuild_${PROJECT_NAME}
   COMMAND cmake -E remove_directory output
   COMMAND cmake -E make_directory output
   COMMAND sphinx-build -b latex doc output

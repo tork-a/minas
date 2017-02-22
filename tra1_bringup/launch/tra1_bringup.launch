@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+  <!-- GDB functionality -->
+  <arg name="debug" default="false" />
+  <arg name="simulation" default="false" />
+
+  <!-- Load robot description -->
+  <param name="robot_description"
+    command="$(find xacro)/xacro.py '$(find tra1_description)/urdf/tra1.xacro'" />
+
+  <!-- Load hardware interface -->
+  <include file="$(find minas_control)/launch/minas_control.launch" >
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="simulation" value="$(arg simulation)" />
+  </include>
+
+  <!-- Load joint controller configurations from YAML file to parameter server -->
+  <rosparam file="$(find tra1_bringup)/config/tra1_controllers.yaml"
+            command="load"/>
+
+  <!-- Load the default controllers -->
+  <node name="controller_spawner" pkg="controller_manager"
+        type="spawner" respawn="false"
+        output="screen"
+        args="joint_state_controller
+              position_trajectory_controller
+              " />
+  <!-- position_trajectory_controller -->
+
+</launch>
