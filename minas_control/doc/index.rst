@@ -311,9 +311,9 @@ and create `ethercat_manager.yaml` file that contains
 
 .. code-block:: bash
 
-  catkin b ethercat_manager --no-deps --make-args debbuild
+  catkin b ethercat_manager --no-deps --make-args debbuild_ethercat_manager
   dpkg -i ros-indigo-ethercat-managerl_0.0.1-0trusty_amd64.deb
-  catkin b minas_control --no-deps --make-args debbuild
+  catkin b minas_control --no-deps --make-args debbuild_minas_control
 
 To install DEB file from command line, please use `gdebi`. Using `apt-get` may fail due to missing dependent deb package, and that breaks your local apt database (wich may fixed by `sudo apt-get install -f install` as reported on the `community site <http://askubuntu.com/questions/58202/how-to-automatically-fetch-missing-dependencies-when-installing-software-from-d>`_)
 
@@ -329,7 +329,7 @@ Following command will build pdf manual.
 
 .. code-block:: bash
 
-  catkin b minas_control --no-deps --make-args docbuild
+  catkin b minas_control --no-deps --make-args docbuild_minas_control
 
 To build the manual you have to install following deb packages
 
