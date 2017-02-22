@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package>
+  <name>tra1_bringup</name>
+  <version>0.2.1</version>
+  <description>The tra1 bringup package</description>
+
+  <maintainer email="534o@opensource-robotics.tokyo.jp">Tokyo Opensource Robotics Developer 534</maintainer>
+
+  <license>GPL</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>minas_control</build_depend>
+  <build_depend>tra1_description</build_depend>
+
+  <run_depend>minas_control</run_depend>
+  <run_depend>tra1_description</run_depend>
+
+  <export>
+  </export>
+</package>
