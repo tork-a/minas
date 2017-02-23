@@ -25,8 +25,8 @@
 namespace minas_control
 {
 
-#define PULSE_PER_REVOLUTE (1048576 / (2 * M_PI) ) // 20 bit
-  //#define PULSE_PER_REVOLUTE ( 131072 / (2 * M_PI) )// 17 bit
+#define PULSE_PER_REVOLUTE ( (1048576 / (2 * M_PI) ) * 101 ) // 20 bit / 101 reduction
+  //#define PULSE_PER_REVOLUTE ( ( 131072 / (2 * M_PI) ) * 101 )// 17 bit / 101 reduction
 
   EtherCATJointControlInterface::EtherCATJointControlInterface(ethercat::EtherCatManager* manager, int slave_no, hardware_interface::JointStateInterface& jnt_stat, hardware_interface::PositionJointInterface& jnt_cmd) : JointControlInterface(slave_no, jnt_stat, jnt_cmd)
   {
