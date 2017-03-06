@@ -33,6 +33,14 @@ To get current joint status, subscribe `/joint_states`, type of `sensor_msgs/Joi
 
 To control the robot joint, publish `/position_trajectory_controller/follow_joint_trajectory/goal`, with `control_msgs/FollowJointTrajectoryActionGoal` message.
 
+### joint_states
+
+To observe current joint states, run
+
+```
+$ rostopic echo /joint_states
+```
+
 ### rqt_joint_trajectory_controller
 
 To control the robot using GUI, run
