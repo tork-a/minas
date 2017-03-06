@@ -2,8 +2,8 @@
 Changelog for package ethercat_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.0 (2017-03-06)
+------------------
 * change docbuild/debbuild to docbuild_${PROJECT_NAME}/debbuild_${PROJECT_NAME}
 * use clock_nanosleep for cycleWorkder
 * Contributors: Tokyo Opensource Robotics Developer 534

@@ -2,8 +2,8 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.3.0 (2017-03-06)
+------------------
 * fix error message Failed to lock memory
 * add documents for step 3 (support multiple joints)
 * add 1/101 gear reduction
