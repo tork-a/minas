@@ -49,34 +49,33 @@ Install From Deb
   sudo gdebi -n ros-indigo-ethercat-driver_0.1.0-0trusty_amd64.deb
   sudo gdebi -n ros-indigo-minas-control_0.1.0-0trusty_amd64.deb
 
-
 MINAS-A5B Control Tools
 =======================
 
 Before you start we  have to configure `SI1` and `SI2` input selection, Please chenge No. 4.01 from default setting `818181h` to `010101h` and No 4.02 from `28282h` to `020202h` using `PANATERM`_, see page 13 of the `Manual`_.
 
-First new need to know the network adapter neme for the EtherCAT netwok, `ifconfig` will give you the list of network adpater of your fomputer, for example, at a following case, eth0 is your EtherCAT network and we'll use `eth0` here after, if you have different adapter name, please use that neme when you run the application.
+First new need to know the network adapter neme for the EtherCAT netwok, `ifconfig` will give you the list of network adpater of your fomputer, for example, at a following case, eth1 is your EtherCAT network and we'll use `eth1` here after, if you have different adapter name, please use that neme when you run the application.
 
 .. code-block:: bash
 
   $ ifconfig            
-  eth0      Link encap:Ethernet  HWaddr 68:f7:82:42:0f:bc
-            inet6 addr: fe80::6af7:28ff:fe24:fbc/64 Scope:Link
-            UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-            RX packets:2901790 errors:0 dropped:124 overruns:0 frame:0
-            TX packets:4073359 errors:0 dropped:0 overruns:0 carrier:0
-            collisions:0 txqueuelen:1000 
-            RX bytes:284659686 (284.6 MB)  TX bytes:516196518 (516.1 MB)
-            Interrupt:20 Memory:f0600000-f0620000 
-  
-  eth1      Link encap:Ethernet  HWaddr 74:03:db:f7:9a:39  
+  eth0      Link encap:Ethernet  HWaddr 74:03:db:f7:9a:39
             inet addr:192.169.100.1  Bcast:192.168.100.255  Mask:255.255.255.0
             inet6 addr: fe80::7603:bdff:fe7f:9a39/64 Scope:Link
             UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
             RX packets:38503098 errors:0 dropped:337 overruns:0 frame:0
             TX packets:5419325 errors:0 dropped:0 overruns:0 carrier:0
-            collisions:0 txqueuelen:1000 
+            collisions:0 txqueuelen:1000
             RX bytes:4368155082 (4.3 GB)  TX bytes:1391012577 (1.3 GB)
+  
+  eth1      Link encap:Ethernet  HWaddr 68:f7:82:42:0f:bc
+            inet6 addr: fe80::6af7:28ff:fe24:fbc/64 Scope:Link
+            UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+            RX packets:2901790 errors:0 dropped:124 overruns:0 frame:0
+            TX packets:4073359 errors:0 dropped:0 overruns:0 carrier:0
+            collisions:0 txqueuelen:1000
+            RX bytes:284659686 (284.6 MB)  TX bytes:516196518 (516.1 MB)
+            Interrupt:20 Memory:f0600000-f0620000
   
   lo        Link encap:Local Loopback  
             inet addr:127.0.0.1  Mask:255.0.0.0
@@ -90,33 +89,52 @@ First new need to know the network adapter neme for the EtherCAT netwok, `ifconf
 slave_info
 ----------
 
-Now let's run `salve_info` to show current configuration of your EtherCAT network. Please change `eth4`.
+Now let's run `salve_info` to show current configuration of your EtherCAT network. Please change `eth1` to your settings.
 
 .. code-block:: bash
 
-  $ rosrun minas_control slaveinfo eth0
+  $ rosrun minas_control slaveinfo eth1
   SOEM (Simple Open EtherCAT Master)
   Slaveinfo
   Initializing etherCAT master
-  wkc = 0
-  SOEM found and configured 1 slaves
+  wkc = 2
+  SOEM found and configured 2 slaves
+  len = 9
+  len = 9
+  len = 9
+  len = 9
   RxPDO mapping object index 1 = 1603 ret=3
   TxPDO mapping object index 1 = 1a03 ret=6
-  SOEM IOMap size: 46
+  RxPDO mapping object index 2 = 1603 ret=3
+  TxPDO mapping object index 2 = 1a03 ret=6
+  SOEM IOMap size: 100
   
   Slave:1
    Name:MADHT1105B01
-   Output size: 168bits
+   Output size: 200bits
    Input size: 200bits
-   State: 8
+  State: 8
    Delay: 0[ns]
    Has DC: 1
    DCParentport:0
-   Activeports:1.0.0.0
+   Activeports:1.1.0.0
    Configured address: 1001
   
-  Finished configuration successfully
-  End program
+  Slave:2
+   Name:MADHT1107B21
+   Output size: 200bits
+   Input size: 200bits
+   State: 8
+   Delay: 680[ns]
+   Has DC: 1
+   DCParentport:1
+   Activeports:1.0.0.0
+   Configured address: 1002
+  PDO syncmode 00, cycle time 0 ns (min 17000), sync0 cycle time 0 ns, ret = 4
+  PDO syncmode 00, cycle time 0 ns (min 17000), sync0 cycle time 0 ns, ret = 4
+    
+    Finished configuration successfully
+    End program
 
 simple_test
 -----------
@@ -170,48 +188,126 @@ To run `simple_test` with pp mode, use `-p` option.
 
 .. code-block:: bash
 
-  $ rosrun minas_control simple_test -p -i eth0
-  SOEM (Simple Open EtherCAT Master)
-  Simple test
+  $ rosrun minas_control simple_test -p -i eth1
+  MINAS Simple Test using SOEM (Simple Open EtherCAT Master)
   Initializing etherCAT master
-  wkc = 1
-  SOEM found and configured 1 slaves
+  wkc = 2
+  SOEM found and configured 2 slaves
+  len = 9
+  len = 9
+  len = 9
+  len = 9
   RxPDO mapping object index 1 = 1603 ret=3
   TxPDO mapping object index 1 = 1a03 ret=6
-  SOEM IOMap size: 46
+  RxPDO mapping object index 2 = 1603 ret=3
+  TxPDO mapping object index 2 = 1a03 ret=6
+  SOEM IOMap size: 100
   
   Slave:1
    Name:MADHT1105B01
-   Output size: 168bits
+   Output size: 200bits
    Input size: 200bits
    State: 8
    Delay: 0[ns]
    Has DC: 1
    DCParentport:0
-   Activeports:1.0.0.0
+   Activeports:1.1.0.0
    Configured address: 1001
   
-  Finished configuration successfully
-  Switch on disabled
-  Ready to switch on
-  Switched on
-  Switched on
-  Switched on
-  Switched on
-  Switched on
-  Switched on
-  Operation enabled
-  target position = fff35147
-  err = 0000, ctrl 001f, status 1237, op_mode =  1, pos = 00035148, vel = 00000000, tor = 00000000
-  err = 0000, ctrl 001f, status 1237, op_mode =  1, pos = 00035141, vel = fffffe0c, tor = 0000fffe
-  ...
-  err = 0000, ctrl 001f, status 1237, op_mode =  1, pos = fff35138, vel = 00000000, tor = 0000000b
-  err = 0000, ctrl 001f, status 1637, op_mode =  1, pos = fff35140, vel = 000000fa, tor = 0000000a
-  target reached
-  Operation enabled
-  Switched on
-  Ready to switch on
-  Switch on disabled
+  Slave:2
+   Name:MADHT1107B21
+   Output size: 200bits
+   Input size: 200bits
+   State: 8
+   Delay: 680[ns]
+   Has DC: 1
+   DCParentport:1
+   Activeports:1.0.0.0
+   Configured address: 1002
+  PDO syncmode 00, cycle time 0 ns (min 17000), sync0 cycle time 0 ns,ret = 4
+  PDO syncmode 00, cycle time 0 ns (min 17000), sync0 cycle time 0 ns,ret = 4
+    overrun: 0.000596
+    overrun: 0.000572
+    overrun: 0.002370
+  Set interpolation time period 4000 us (4000000/4)
+    overrun: 0.005399
+  1c32h: cycle time 0
+  60c2h: interpolation time period value 25
+  Statusword(6041h): 0a70
+   Switch on disabled
+   Internal limit active
+   Following error
+   Drive follows command value
+    overrun: 0.007179
+    overrun: 0.006475
+    overrun: 0.000108
+  Statusword(6041h): 0e37
+   Operation enabled
+   Internal limit active
+   Following error
+   Set-point acknowledge
+   Target reached
+    overrun: 0.000403
+  target position = 000e912d
+    overrun: 0.000011
+    overrun: 0.000191
+  Set interpolation time period 4000 us (4000000/4)
+    overrun: 0.000659
+  1c32h: cycle time 0
+  60c2h: interpolation time period value 25
+  Statusword(6041h): 0a70
+   Switch on disabled
+   Internal limit active
+   Following error
+   Drive follows command value
+  Statusword(6041h): 0e31
+   Ready to switch on
+   Internal limit active
+   Following error
+   Set-point acknowledge
+   Target reached
+    overrun: 0.001740
+    overrun: 0.004097
+  target position = 000c2bba
+    overrun: 0.003520
+  err = 0000, ctrl 000f, status 0237, op_mode =  1, pos = fffe9196, vel = 00000cb2, tor = 00000017
+  Tick 1488782766.167119670
+  Input:
+   603Fh 00000000 :Error code
+   6041h 00000237 :Statusword
+   6061h 00000001 :Modes of operation display
+   6064h fffe9196 :Position actual value
+   606Ch 00000cb2 :Velocity actual value
+   6077h 00000017 :Torque actual value
+   60B9h 00000000 :Touch probe status
+   60BAh 00000000 :Touch probe pos1 pos value
+   60FDh c0000000 :Digital inputs
+  Output:
+   6040h 0000000f :Controlword
+   6060h 00000001 :Mode of operation
+    overrun: 0.002877
+   6071h 000001f4 :Target Torque
+   6072h 000001f4 :Max Torque
+   607Ah 000e912d :Target Position
+   6080h 00000078 :Max motor speed
+   60B8h 00000000 :Touch Probe function
+   60FFh 00000000 :Target Velocity
+   60B0h 00000000 :Position Offset
+    overrun: 0.002274
+  err = 0000, ctrl 000f, status 1237, op_mode =  1, pos = fffc2bb6, vel = fffffe0c, tor = 00000000
+  Tick 1488782766.167119670
+  Input:
+   603Fh 00000000 :Error code
+   6041h 00001237 :Statusword
+   6061h 00000001 :Modes of operation display
+   6064h fffc2bb6 :Position actual value
+   606Ch fffffe0c :Velocity actual value
+   6077h 00000000 :Torque actual value
+   60B9h 00000000 :Touch probe status
+   60BAh 00000000 :Touch probe pos1 pos value
+   60FDh c0000000 :Digital inputs
+
+You can see some erros in the first a few seconds, until the motors servo on, but that's expected behavior and you can ingreo for now.
 
 If you run `simple_test` with `-c` option, it will servo on, rotate about 180 degree back and forth with sin curve and servo off. Basic flow of the cpp program as follows.
 
@@ -297,7 +393,8 @@ Create DEB file
 Following command will build DEB (binary installer file for Ubuntu with which you can install software by a simple run of `gdebi` command) files.
 
 Before start please add following line to your `/etc/ros/rosdep/sources.list.d/20-default.list` file
-.. code-blcok:: bash
+
+.. code-block:: bash
 
   yaml file:///etc/ros/rosdep/ethercat_manager.yaml
 
@@ -308,6 +405,8 @@ and create `ethercat_manager.yaml` file that contains
   ethercat_manager:
     ubuntu:
       apt: ros-indigo-ethercat-manager
+
+and run `rosdep update`. Then create deb fiels as follows.
 
 .. code-block:: bash
 
@@ -348,7 +447,7 @@ Trouble shooting
 
   .. code-block:: bash
 
-    $ reset eth4
+    $ reset eth1
     SOEM (Simple Open EtherCAT Master)
     Simple test
     Initializing etherCAT master
@@ -356,6 +455,10 @@ Trouble shooting
     terminate called after throwing an instance of 'ethercat::EtherCatError'
       what():  Could not initialize SOEM
     Aborted (Core dump)
+
+Failed to lock memory. It is recommended to set permission to
+executables, for example: sudo setcap cap_net_raw,cap_ipc_lock=+ep
+main: Cannot allocate memory
 
   Please check if your binary have correctly set permissions by
 
