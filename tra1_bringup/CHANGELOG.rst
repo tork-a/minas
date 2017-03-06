@@ -2,6 +2,11 @@
 Changelog for package tra1_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add doc for tra1_brignup (step 5)
+* Contributors: Tokyo Opensource Robotics Developer 534
+
 0.4.0 (2017-03-06)
 ------------------
 * add CHANGELOG for tra1\_ packages
