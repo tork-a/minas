@@ -29,9 +29,23 @@ $ rostopic list
 /tf_static
 ```
 
+If you add `simulation` argument, you can run ROS controller without motor drivers.
+
+```
+$ roslaunch tra1_bringup tra1_bringup.launch simulation:=true
+```
+
 To get current joint status, subscribe `/joint_states`, type of `sensor_msgs/JointState`.
 
 To control the robot joint, publish `/position_trajectory_controller/follow_joint_trajectory/goal`, with `control_msgs/FollowJointTrajectoryActionGoal` message.
+
+### joint_states
+
+To observe current joint states, run
+
+```
+$ rostopic echo /joint_states
+```
 
 ### rqt_joint_trajectory_controller
 

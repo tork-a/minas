@@ -584,13 +584,13 @@ and run `rosdep update`. Then create deb fiels as follows.
   catkin b ethercat_manager --no-deps --make-args debbuild_ethercat_manager
   dpkg -i ros-indigo-ethercat-managerl_0.0.1-0trusty_amd64.deb
   catkin b minas_control --no-deps --make-args debbuild_minas_control
-  dpkg -i ros-indigo-debbuild-minas-control_0.0.1-0trusty_amd64.deb
+  dpkg -i ros-indigo-minas-control_0.0.1-0trusty_amd64.deb
   catkin b tra1_description --no-deps --make-args debbuild_tra1_description
-  dpkg -i ros-indigo-debbuild-tra1-description_0.0.1-0trusty_amd64.deb
+  dpkg -i ros-indigo-tra1-description_0.0.1-0trusty_amd64.deb
   catkin b tra1_moveit_config --no-deps --make-args debbuild_tra1_moveit_config
-  dpkg -i ros-indigo-debbuild-tra1-moveit-config_0.0.1-0trusty_amd64.deb
+  dpkg -i ros-indigo-tra1-moveit-config_0.0.1-0trusty_amd64.deb
   catkin b tra1_bringup --no-deps --make-args debbuild_tra1_bringup
-  dpkg -i ros-indigo-debbuild-tra1-bringup_0.0.1-0trusty_amd64.deb
+  dpkg -i ros-indigo-tra1-bringup_0.0.1-0trusty_amd64.deb
 
 To install DEB file from command line, please use `gdebi`. Using `apt-get` may fail due to missing dependent deb package, and that breaks your local apt database (wich may fixed by `sudo apt-get install -f install` as reported on the `community site <http://askubuntu.com/questions/58202/how-to-automatically-fetch-missing-dependencies-when-installing-software-from-d>`_)
 
