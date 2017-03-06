@@ -2,8 +2,8 @@
 Changelog for package tra1_moveit_config
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.0 (2017-03-06)
+------------------
 * add CHANGELOG for tra1\_ packages
 * update CMakeLists.txt : add Relaease
 * Contributors: Tokyo Opensource Robotics Developer 534

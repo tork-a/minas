@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>minas_control</name>
-  <version>0.3.0</version>
+  <version>0.4.0</version>
   <description>The minas_control package</description>
 
   <maintainer email="534o@opensource-robotics.tokyo.jp">Tokyo Opensource Robotics Developer 534</maintainer>

@@ -2,8 +2,8 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.4.0 (2017-03-06)
+------------------
 * add doc for step 4 (realtime control)
 * Contributors: Tokyo Opensource Robotics Developer 534
 
