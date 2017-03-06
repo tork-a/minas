@@ -2,6 +2,12 @@
 Changelog for package tra1_moveit_config
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add CHANGELOG for tra1\_ packages
+* update CMakeLists.txt : add Relaease
+* Contributors: Tokyo Opensource Robotics Developer 534
+
 0.3.0 (2017-03-06)
 ------------------
 * config/tra1_controllers.yaml: add controller_manager_ns: controller_manager

@@ -2,6 +2,11 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add doc for step 4 (realtime control)
+* Contributors: Tokyo Opensource Robotics Developer 534
+
 0.3.0 (2017-03-06)
 ------------------
 * fix error message Failed to lock memory
