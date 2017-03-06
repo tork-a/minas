@@ -15,6 +15,14 @@
     <arg name="simulation" value="$(arg simulation)" />
   </include>
 
+  <!-- If needed, broadcast static tf for robot root -->
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster"
+        args="0 0 0 0 0 0 /world /base_link 100" />
+
+  <!-- Given the published joint states, publish tf for the robot links -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
+
+
   <!-- Load joint controller configurations from YAML file to parameter server -->
   <rosparam file="$(find tra1_bringup)/config/tra1_controllers.yaml"
             command="load"/>
