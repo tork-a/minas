@@ -375,6 +375,165 @@ If you have somethig wrong, you can run reset command. If you still have issue, 
   Finished configuration successfully
   End program
 
+main (ROS controlelr program)
+-----------------------------
+
+The `main` executable is ROS based controller program.  '-h' or '--help' option will show the usages of this program.
+
+.. code-block:: bash
+
+  $ rosrun minas_control main -h
+  Usage: main [options]
+    Available options
+      -i, --interface             NIC interface name for EtherCAT
+      -l, --loopback              Use loopback interface for Controller (i.e. simulation mode)
+      -p, --period                RT loop period in msec
+      -s, --stats                 Publish statistics on the RT loop jitter on
+                                  "node_name/realtime" in seconds
+      -h, --help                  Print this message and exit
+
+If you do not have MINAS-A5B hardwre, you can run with simulation mode
+
+.. code-block:: bash
+
+  $ rosrun minas_control main -l
+  [ INFO] [1488677269.130094946]: Minas Hardware Interface in simulation mode
+
+and check the realtime capability of the ros control program by listening `/diagnostics` ROS topic.
+
+..
+
+To run controllers with physical MINAS A-5 Hardware connecting at `eth1` EtherCAT network, you can `main` program as follows. Please change `eth1` to your settings.
+
+.. code-block:: bash
+
+  $ rosrun minas_control main -i eth1
+  Initializing etherCAT master
+  wkc = 2
+  SOEM found and configured 2 slaves
+  len = 9
+  len = 9
+  len = 9
+  len = 9
+  RxPDO mapping object index 1 = 1603 ret=3
+  TxPDO mapping object index 1 = 1a03 ret=6
+  RxPDO mapping object index 2 = 1603 ret=3
+  TxPDO mapping object index 2 = 1a03 ret=6
+  SOEM IOMap size: 100
+  
+  Slave:1
+   Name:MADHT1105B01
+   Output size: 200bits
+   Input size: 200bits
+   State: 8
+   Delay: 0[ns]
+   Has DC: 1
+   DCParentport:0
+   Activeports:1.1.0.0
+   Configured address: 1001
+  
+  Slave:2
+   Name:MADHT1107B21
+   Output size: 200bits
+   Input size: 200bits
+   State: 8
+   Delay: 680[ns]
+   Has DC: 1
+   DCParentport:1
+   Activeports:1.0.0.0
+   Configured address: 1002
+  PDO syncmode 00, cycle time 0 ns (min 17000), sync0 cycle time 0 ns, ret = 4
+  PDO syncmode 00, cycle time 0 ns (min 17000), sync0 cycle time 0 ns, ret = 4
+  Finished configuration successfully
+  [ERROR] [1488776588.629694406]: Minas Hardware Interface expecting 6 clients
+    overrun: 0.000117
+    overrun: 0.000442
+    overrun: 0.000259
+  Statusword(6041h): 0e33
+   Switched on
+   Internal limit active
+   Following error
+   Set-point acknowledge
+   Target reached
+  Statusword(6041h): 0a37
+   Operation enabled
+   Internal limit active
+   Following error
+   Set-point acknowledge
+   Target reached
+  [ WARN] [1488776588.870953939]: target position = 00000000
+  [ WARN] [1488776588.871001884]: position offset = fffc2bb3
+  [ERROR] [1488776588.871041451]: Could not find EtherCAT client
+  [ERROR] [1488776588.871057483]: Minas Hardware Interface uses Dummy joint 3
+  [ERROR] [1488776588.871073659]: Could not find EtherCAT client
+  [ERROR] [1488776588.871084746]: Minas Hardware Interface uses Dummy joint 4
+  [ERROR] [1488776588.871099793]: Could not find EtherCAT client
+  [ERROR] [1488776588.871110595]: Minas Hardware Interface uses Dummy joint 5
+  [ERROR] [1488776588.871122447]: Could not find EtherCAT client
+  [ERROR] [1488776588.871132278]: Minas Hardware Interface uses Dummy joint 6
+
+
+You can see some erros, specially if you do not set connect 6 motors on your EtherCAT network, but still the controlle software is able to run as they use loopback driver for these joints.
+
+To check current realtime capabiliy of ROS control, you can run `rostopic echo /diagnostics`.
+
+.. code-block:: bash
+
+  $ rostopic echo /diagnostics
+  ---
+  header: 
+    seq: 200
+    stamp: 
+      secs: 1488776789
+      nsecs:  50168139
+    frame_id: ''
+  status: 
+    - 
+      level: 0
+      name: Realtime Control Loop
+      message: Realtime loop used too much time in the last 30 seconds.
+      hardware_id: ''
+      values: 
+        - 
+          key: Max EtherCAT roundtrip (us)
+          value: 4030.91
+        - 
+          key: Avg EtherCAT roundtrip (us)
+          value: 13.41
+        - 
+          key: Max Controller Manager roundtrip (us)
+          value: 383.95
+        - 
+          key: Avg Controller Manager roundtrip (us)
+          value: 5.41
+        - 
+          key: Max Total Loop roundtrip (us)
+          value: 5127.10
+        - 
+          key: Avg Total Loop roundtrip (us)
+          value: 1000.01
+        - 
+          key: Max Loop Jitter (us)
+          value: 1136.49
+        - 
+          key: Avg Loop Jitter (us)
+          value: 71.25
+        - 
+          key: Control Loop Overruns
+          value: 11
+        - 
+          key: Recent Control Loop Overruns
+          value: 0
+        - 
+          key: Last Control Loop Overrun Cause
+          value: ec: 1221.71us, cm: 2.58us
+        - 
+          key: Last Overrun Loop Time (us)
+          value: 281.10
+        - 
+          key: Realtime Loop  Frequency
+          value: 971.6667
+
 .. API Documents
 .. =============
 
@@ -405,6 +564,18 @@ and create `ethercat_manager.yaml` file that contains
   ethercat_manager:
     ubuntu:
       apt: ros-indigo-ethercat-manager
+  minas_control:
+    ubuntu:
+      apt: ros-indigo-minas-control
+  tra1_description:
+    ubuntu:
+      apt: ros-indigo-tra1-description
+  tra1_moveit_config:
+    ubuntu:
+      apt: ros-indigo-tra1-movei-tconfig
+  tra1_bringup:
+    ubuntu:
+      apt: ros-indigo-tra1-bringup
 
 and run `rosdep update`. Then create deb fiels as follows.
 
@@ -413,6 +584,13 @@ and run `rosdep update`. Then create deb fiels as follows.
   catkin b ethercat_manager --no-deps --make-args debbuild_ethercat_manager
   dpkg -i ros-indigo-ethercat-managerl_0.0.1-0trusty_amd64.deb
   catkin b minas_control --no-deps --make-args debbuild_minas_control
+  dpkg -i ros-indigo-debbuild-minas-control_0.0.1-0trusty_amd64.deb
+  catkin b tra1_description --no-deps --make-args debbuild_tra1_description
+  dpkg -i ros-indigo-debbuild-tra1-description_0.0.1-0trusty_amd64.deb
+  catkin b tra1_moveit_config --no-deps --make-args debbuild_tra1_moveit_config
+  dpkg -i ros-indigo-debbuild-tra1-moveit-config_0.0.1-0trusty_amd64.deb
+  catkin b tra1_bringup --no-deps --make-args debbuild_tra1_bringup
+  dpkg -i ros-indigo-debbuild-tra1-bringup_0.0.1-0trusty_amd64.deb
 
 To install DEB file from command line, please use `gdebi`. Using `apt-get` may fail due to missing dependent deb package, and that breaks your local apt database (wich may fixed by `sudo apt-get install -f install` as reported on the `community site <http://askubuntu.com/questions/58202/how-to-automatically-fetch-missing-dependencies-when-installing-software-from-d>`_)
 
