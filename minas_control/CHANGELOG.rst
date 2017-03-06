@@ -2,6 +2,17 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix error message Failed to lock memory
+* add documents for step 3 (support multiple joints)
+* add 1/101 gear reduction
+* change docbuild/debbuild to docbuild\_${PROJECT_NAME}/debbuild\_${PROJECT_NAME}, Close `#5 <https://github.com/tork-a/minas/issues/5>`_.
+* add tra1_bringup
+* add ros_control for minas robot
+* doc: run debbuild --no-deps-> fix typo
+* Contributors: Tokyo Opensource Robotics Developer 534
+
 0.2.1 (2017-02-04)
 ------------------
 * doc: segmentation fault no longer occour
