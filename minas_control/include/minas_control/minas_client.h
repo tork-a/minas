@@ -199,6 +199,53 @@ private:
   const int slave_no_;
 };
 
+/**
+ * \brief Table of error code and text
+ * See 6-3 of https://industrial.panasonic.com/content/data/MT/PDF/manual/en/acs/minas-a5-2_manu_e.pdf
+ */
+const struct {
+  unsigned int code;
+  const char* text;
+} error_map[] = {
+  {11, "Control power supply under-voltage protection"},
+  {12, "Over voltage protection"},
+  {13, "Main power supply under-voltage protection(between P and N)"},
+  {14, "Over-current protection"}, 
+  {15, "Over-heat protection"},
+  {16, "Over-load protection"},
+  {18, "Over-regeneration load protection"},
+  {21, "Encoder communication disconnect error protection"},
+  {23, "Encoder communication data error protection"},
+  {24, "Position deviation excess protection"},
+  {25, "Hybrid deviation excess error protection"},
+  {26, "Over speed protection"},
+  {27, "Command pulse input frequency error protection"},
+  {28, "Limit of pulse replay error protection"},
+  {29, "Deviation counter overflow protection"},
+  {30, "Safety detection"},
+  {33, "IF overlaps allocation error 1 protection"},
+  {34, "Software limit protection"},
+  {36, "EEPROM parameter error protection"},
+  {37, "EEPROM check code error protection"},
+  {38, "Over-travel inhibit input protection"},
+  {39, "Analog input1 excess protection"},
+  {40, "Absolute system down error protection"},
+  {41, "Absolute counter over error protection"},
+  {42, "Absolute over-speed error protection"},
+  {43, "Initialization failure"},
+  {44, "Absolute single turn counter error protection"},
+  {45, "Absolute multi-turn counter error protection"},
+  {47, "Absolute status error protection"},
+  {48, "Encoder Z-phase error protection"},
+  {49, "Encoder CS signal error protection"},
+  {50, "Feedback scale connection error protection"},
+  {51, "Feedback scale status 0 error protection"},
+  {55, "A-phase connection error protection"},
+  {87, "Compulsory alarm input protection"},
+  {95, "Motor automatic recognition error protection"},
+  {99, "Other error"},
+};
+
 }
 
 #endif
