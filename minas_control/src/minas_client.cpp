@@ -87,7 +87,15 @@ MinasInput MinasClient::readInputs() const
   input.digital_inputs			= *(uint32 *)(map+21);
 
   if (input.error_code >> 8 == 0xff) {
-    printf("ERROR : %d\n", (input.error_code)&0x00ff);
+    int ecode = (input.error_code)&0x00ff;
+    printf("%s : %d ", (ecode<0x9f)?"ALARM":"ERROR", ecode);
+    for (unsigned i=0; i<sizeof(error_map)/sizeof(error_map[0]); i++) {
+      if (error_map[i].code == 99 || error_map[i].code == ecode) {
+        printf("%s", error_map[i].text);
+        break;
+      }
+    }
+    printf("\n");
   }
   return input;
 }
