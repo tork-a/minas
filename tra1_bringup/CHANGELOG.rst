@@ -2,8 +2,8 @@
 Changelog for package tra1_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.1 (2017-03-26)
+------------------
 * README.md: add instruction to run simulation(loopback) mode
 * README.md: add how to observe joint_states
 * Contributors: Tokyo Opensource Robotics Developer 534

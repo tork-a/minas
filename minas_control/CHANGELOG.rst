@@ -2,8 +2,8 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.1 (2017-03-26)
+------------------
 * add debian/postinst to set cap/ipc
 * CMakeLists.txt add to install launch directory
 * Add error text for MinasClient::readInputs()
