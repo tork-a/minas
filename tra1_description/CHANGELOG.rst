@@ -2,6 +2,11 @@
 Changelog for package tra1_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Reduce meshes size using meshlab
+* Contributors: Tokyo Opensource Robotics Developer 7675
+
 0.5.0 (2017-03-06)
 ------------------
 

@@ -2,6 +2,15 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add debian/postinst to set cap/ipc
+* CMakeLists.txt add to install launch directory
+* Add error text for MinasClient::readInputs()
+  - This is for `#10 <https://github.com/tork-a/minas/issues/10>`_
+* fix typo on dpkg-i ros-indigo-*.deb section
+* Contributors: Tokyo Opensource Robotics Developer 7675, Tokyo Opensource Robotics Developer 534
+
 0.5.0 (2017-03-06)
 ------------------
 
