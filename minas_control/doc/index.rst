@@ -40,25 +40,24 @@ First install a few components this package needs: `ROS`_ (robotics middleware)
 Install From Deb
 ----------------
 
-1. Obtain `minas_control` and `ethercat_driver` deb file (here assumes`ros-indigo-ethercat-driver_0.1.0-0trusty_amd64.deb` and `ros-indigo-minas-control_0.1.0-0trusty_amd64.deb`). Plase it under
+1. Obtain `minas_control` and `ethercat_manager` deb file (here assumes`ros-indigo-ethercat-manager_0.5.1-0trusty_amd64.deb` and `ros-indigo-minas-control_0.5.0-0trusty_amd64.deb`). Plase it under
    current directoly.
 
 .. code-block:: bash
 
   sudo apt-get install -y gdebi
-  sudo gdebi -n ros-indigo-ethercat-driver_0.5.1-0trusty_amd64.deb
+  sudo gdebi -n ros-indigo-ethercat-manager_0.5.1-0trusty_amd64.deb
   sudo gdebi -n ros-indigo-minus-control_0.5.1-0trusty_amd64.deb
   sudo gdebi -n ros-indigo-tra1-description_1.5.0-0trusty_amd64.deb
   sudo gdebi -n ros-indigo-tra1-bringup_0.5.1-0trusty_amd64.deb
   sudo gdebi -n ros-indigo-tra1-moveit-config_0.5.1-0trusty_amd64.deb
 
-
 MINAS-A5B Control Tools
 =======================
 
-Before you start we  have to configure `SI1` and `SI2` input selection, Please chenge No. 4.01 from default setting `818181h` to `010101h` and No 4.02 from `28282h` to `020202h` using `PANATERM`_, see page 13 of the `Manual`_.
+Before you start we  have to configure `SI1` and `SI2` input selection, Please change No. 4.01 from default setting `818181h` to `010101h` and No 4.02 from `28282h` to `020202h` using `PANATERM`_, see page 13 of the `Manual`_.
 
-First new need to know the network adapter neme for the EtherCAT netwok, `ifconfig` will give you the list of network adpater of your fomputer, for example, at a following case, eth1 is your EtherCAT network and we'll use `eth1` here after, if you have different adapter name, please use that neme when you run the application.
+First you need to know the network adapter neme for the EtherCAT netwok, `ifconfig` will give you the list of network adpater of your computer, for example, at a following case, eth1 is your EtherCAT network and we'll use `eth1` here after, if you have different adapter name, please use that name when you run the application.
 
 .. code-block:: bash
 
@@ -93,7 +92,7 @@ First new need to know the network adapter neme for the EtherCAT netwok, `ifconf
 slave_info
 ----------
 
-Now let's run `salve_info` to show current configuration of your EtherCAT network. Please change `eth1` to your settings.
+Now let's run `salveinfo` to show current configuration of your EtherCAT network. Please change `eth1` to your settings.
 
 .. code-block:: bash
 
@@ -586,7 +585,7 @@ and run `rosdep update`. Then create deb fiels as follows.
 .. code-block:: bash
 
   catkin b ethercat_manager --no-deps --make-args debbuild_ethercat_manager
-  dpkg -i ros-indigo-ethercat-managerl_0.0.1-0trusty_amd64.deb
+  dpkg -i ros-indigo-ethercat-manager_0.0.1-0trusty_amd64.deb
   catkin b minas_control --no-deps --make-args debbuild_minas_control
   dpkg -i ros-indigo-minas-control_0.0.1-0trusty_amd64.deb
   catkin b tra1_description --no-deps --make-args debbuild_tra1_description
