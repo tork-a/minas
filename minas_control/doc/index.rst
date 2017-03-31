@@ -46,8 +46,12 @@ Install From Deb
 .. code-block:: bash
 
   sudo apt-get install -y gdebi
-  sudo gdebi -n ros-indigo-ethercat-driver_0.1.0-0trusty_amd64.deb
-  sudo gdebi -n ros-indigo-minas-control_0.1.0-0trusty_amd64.deb
+  sudo gdebi -n ros-indigo-ethercat-driver_0.5.1-0trusty_amd64.deb
+  sudo gdebi -n ros-indigo-minus-control_0.5.1-0trusty_amd64.deb
+  sudo gdebi -n ros-indigo-tra1-description_1.5.0-0trusty_amd64.deb
+  sudo gdebi -n ros-indigo-tra1-bringup_0.5.1-0trusty_amd64.deb
+  sudo gdebi -n ros-indigo-tra1-moveit-config_0.5.1-0trusty_amd64.deb
+
 
 MINAS-A5B Control Tools
 =======================
