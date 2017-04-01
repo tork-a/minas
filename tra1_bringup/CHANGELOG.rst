@@ -2,6 +2,9 @@
 Changelog for package tra1_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.5.1 (2017-03-26)
 ------------------
 * README.md: add instruction to run simulation(loopback) mode

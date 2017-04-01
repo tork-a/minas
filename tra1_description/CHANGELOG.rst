@@ -2,6 +2,9 @@
 Changelog for package tra1_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 0.5.1 (2017-03-26)
 ------------------
 * Reduce meshes size using meshlab

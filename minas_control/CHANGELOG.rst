@@ -2,6 +2,14 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* CMakeLists.txt: set INSTALL_RPARH_USE_LINK_PATH for preserving RPATH, fix `#20 <https://github.com/tork-a/minas/issues/20>`_
+* CMakeLists.txt: do not remove debian/postinst on debbuild target
+* doc/index.rst: Fix some typos
+* doc/index.rst: add all deb files to install
+* Contributors: Tokyo Opensource Robotics Developer 7675, Tokyo Opensource Robotics Developer 534
+
 0.5.1 (2017-03-26)
 ------------------
 * add debian/postinst to set cap/ipc
