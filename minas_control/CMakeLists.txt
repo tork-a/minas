@@ -61,6 +61,12 @@ install(TARGETS slaveinfo simple_test reset minas_client main
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+# https://github.com/tork-a/minas/issues/20 / http://stackoverflow.com/questions/3352041/creating-binary-with-cmake-removes-runtime-path
+set_property(TARGET slaveinfo PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+set_property(TARGET simple_test PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+set_property(TARGET reset PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+set_property(TARGET minas_client PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+set_property(TARGET main PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
