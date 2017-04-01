@@ -2,8 +2,8 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+0.5.2 (2017-04-01)
+------------------
 * CMakeLists.txt: set INSTALL_RPARH_USE_LINK_PATH for preserving RPATH, fix `#20 <https://github.com/tork-a/minas/issues/20>`_
 * CMakeLists.txt: do not remove debian/postinst on debbuild target
 * doc/index.rst: Fix some typos
