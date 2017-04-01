@@ -61,6 +61,12 @@ install(TARGETS slaveinfo simple_test reset minas_client main
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+# https://github.com/tork-a/minas/issues/20 / http://stackoverflow.com/questions/3352041/creating-binary-with-cmake-removes-runtime-path
+set_property(TARGET slaveinfo PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+set_property(TARGET simple_test PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+set_property(TARGET reset PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+set_property(TARGET minas_client PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
+set_property(TARGET main PROPERTY INSTALL_RPATH_USE_LINK_PATH TRUE)
 
 install(DIRECTORY include/${PROJECT_NAME}/
   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
@@ -83,7 +89,8 @@ add_custom_target(debbuild_${PROJECT_NAME}
   COMMAND sudo -n true || (>&2 echo "debbuild need sudo access to make debs" && exit 1)
   COMMAND bloom-generate rosdebian --os-name ubuntu --os-version trusty --ros-distro indigo
   COMMAND MAKEFLAGS= fakeroot debian/rules binary
-  COMMAND rm -fr debian obj-x86_64-linux-gnu
+  COMMAND find debian obj-x86_64-linux-gnu -type f -not -name postinst -print0 | xargs -0 rm --
+  COMMAND find debian obj-x86_64-linux-gnu -type d -empty -delete
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
   )
 
