@@ -52,6 +52,145 @@ Install From Deb
   sudo gdebi -n ros-indigo-tra1-bringup_0.5.1-0trusty_amd64.deb
   sudo gdebi -n ros-indigo-tra1-moveit-config_0.5.1-0trusty_amd64.deb
 
+Running MINAS-A5B Controller
+============================
+
+To run MINAS-A5B controller, you can start with following roslaunch command.
+
+.. code-block:: bash
+
+  roslaunch tra1_bringup tra1_bringup.launch
+
+Running `rostopic` command will show a list of input and output topics of this controller
+
+.. code-block:: bash
+
+  $ rostopic list
+  /diagnostics
+  /joint_states
+  /position_trajectory_controller/command
+  /position_trajectory_controller/follow_joint_trajectory/cancel
+  /position_trajectory_controller/follow_joint_trajectory/feedback
+  /position_trajectory_controller/follow_joint_trajectory/goal
+  /position_trajectory_controller/follow_joint_trajectory/result
+  /position_trajectory_controller/follow_joint_trajectory/status
+  /position_trajectory_controller/state
+  /rosout
+  /rosout_agg
+  /tf
+
+rostopic named `joint_states` will show the status of each joint including
+
+-  the position of the joint (rad or m)
+-  the velocity of the joint (rad/s or m/s)
+-  the effort that is applied in the joint (Nm or N)
+
+.. code-block:: bash
+
+  $ rosmsg show sensor_msgs/JointState
+  std_msgs/Header header
+    uint32 seq
+    time stamp
+    string frame_id
+  string[] name
+  float64[] position
+  float64[] velocity
+  float64[] effort
+
+To send commands to the controller, you can use `/position_trajectory_controller/follow_joint_trajectory/goal` of type `control_msgs/JointTrajectoryActionGoal`.
+
+.. code-block:: bash
+
+  $ rosmsg show control_msgs/JointTrajectoryActionGoal
+  std_msgs/Header header
+    uint32 seq
+    time stamp
+    string frame_id
+  actionlib_msgs/GoalID goal_id
+    time stamp
+    string id
+  control_msgs/JointTrajectoryGoal goal
+    trajectory_msgs/JointTrajectory trajectory
+      std_msgs/Header header
+        uint32 seq
+        time stamp
+        string frame_id
+      string[] joint_names
+      trajectory_msgs/JointTrajectoryPoint[] points
+        float64[] positions
+        float64[] velocities
+        float64[] accelerations
+        float64[] effort
+        duration time_from_start
+
+
+The `tra1_bringup.launch` assumes you have connected EtherCAT device to the `eth0` device of your machine. To run controller with custom settings, you can use `eth` argument.
+
+.. code-block:: bash
+
+  roslaunch tra1_bringup tra1_bringup.launch eth:=eth4
+
+If you would like to run withtout hardware devices, you can run MINAS-A5B controller with simulation mode
+
+.. code-block:: bash
+
+  roslaunch tra1_bringup tra1_bringup.launch simulation:=true
+
+To change control parameter, you can use following rosparams. These are relative to `/main/joint1` ... /main/joint6`.
+
+- torque_for_emergency_stop : Set up the torque limit at emergency stop, When setup value is 0, the torque limit for normal operation is applied. Range is 0 - 500 (%). Default value is 100 (%).
+- over_load_level : You can set up the over-load level. The overload level becomes 115[%] by setting up this to 0. Use this with 0 setup in normal operation. Set up other value only when you need to lower the over-load level. Range is 0 - 500 (%). Default value is 50 (%).
+- over_speed_level : If the motor speed exceeds this setup value, Err26.0 Over-speed protection occurs. The over-speed level becomes 1.2 times of the motor max. speed by setting up this to 0. Range is 0 - 2000 (r/min). Default value is 120 (r/min).
+- motor_working_range : You can set up the movable range of the motor against the position command input range. When the motor movement exceeds the setup value, software limit protection of Err34.0 will be triggered. Range is 0 - 1.0 (revolution). Default value is 0.0 (revolution).
+
+For more detail, see 4-50 of the manual (https://industrial.panasonic.com/content/data/MT/PDF/manual/en/acs/minas-a5-2_manu_e.pdf)
+
+- max_motor_speed : Set the maximum velocity of motor. The maximum value is limited by the 3910h(Maximum over-speed level) in internal processing.. It is tq and cst and restricts speed with the preset value of this object. Range is 0 - 4294967295 (rad/min). Default value is 120 (rad/min) (6080h / 00h)
+- max_torque : Set the maximum torque of the motor. The maximum value is limited by the maximum torque which is calculated from 3904h(Mass of motor's movable section/ Motor inertia) and 3905h(Rated motor thrust / Rated motor torque). The maximum torque of the motor varies with the motor used. Range is 0 - 65535 (0.1%). Default value is 500 (50%). (6072h / 00h)
+
+For more detail, see p.151 of the manual (https://industrial.panasonic.com/content/data/MT/PDF/refer/en/acs/SX-DSV02830_R1_00E.pdf)
+
+
+These parameters are overwrited at `tra1_bringup.launch`. If you wan to change these parameters, rewriete launch files.
+
+To show contents of current $`tra1_bringup.launch` file. You can use `roscat tra1_bringup  tra1_bringup.launch` command.
+
+
+.. code-block:: bash
+
+  <launch>
+  
+    <!-- GDB functionality -->
+    <arg name="debug" default="false" />
+    <arg name="simulation" default="false" />
+    <arg name="eth" default="eth0" />
+  
+    <!-- Load robot description -->
+    <param name="robot_description"
+      command="$(find xacro)/xacro.py '$(find tra1_description)/urdf/tra1.xacro'" />
+  
+    <rosparam>
+  main/joint1/torque_for_emergency_stop : 100  <!-- 100 % -->
+  main/joint1/over_load_level           : 100  <!-- 100 % -->
+  main/joint1/over_speed_level          : 3000 <!-- rad/min -->
+  main/joint1/motor_working_range       : 0.1  <!-- 0.1 -->
+  main/joint1/max_motor_speed           : 3000 <!-- rad/min -->
+  main/joint1/max_torque                : 50   <!-- 100% -->
+  main/joint2/torque_for_emergency_stop : 100  <!-- 100 % -->
+  main/joint2/over_load_level           : 100  <!-- 100 % -->
+  ...
+
+
+Easiest way should be copy launch file to current directory, change parameters and run that file.
+
+.. code-block:: bash
+
+  $ roscp tra1_bringup tra1_bringup.launch my_tra1_bringup.launch
+  $ emacs my_tra1_bringup.launch
+  $ roslaunch my_tra1_bringup.launch
+
+
+
 MINAS-A5B Control Tools
 =======================
 
