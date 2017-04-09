@@ -4,7 +4,7 @@ MINAS ROS (Robot Operating System) driver
 Overview
 ========
 
-The `minas_control` pacakge contains basic control tools for `MINAS-A5B`_ EtherCAT communication driver for indusdtrial robots.
+The ``minas_control`` pacakge contains basic control tools for `MINAS-A5B`_ EtherCAT communication driver for indusdtrial robots.
 
 Prerequisite
 ===============
@@ -19,8 +19,6 @@ Install Common Components
 ----------------------------
 
 First install a few components this package needs: `ROS`_ (robotics middleware)
-
-1. Install ROS.
 
   The following snippet shows a simple way to install `ROS Indigo` on Ubuntu linux 14.04 `Trusty`. For completeness, you're advised to see `ROS wiki <http://wiki.ros.org/indigo/Installation/Ubuntu>`_.
 
@@ -40,24 +38,162 @@ First install a few components this package needs: `ROS`_ (robotics middleware)
 Install From Deb
 ----------------
 
-1. Obtain `minas_control` and `ethercat_manager` deb file (here assumes`ros-indigo-ethercat-manager_0.5.1-0trusty_amd64.deb` and `ros-indigo-minas-control_0.5.0-0trusty_amd64.deb`). Plase it under
-   current directoly.
+Obtain ``ethercat_manager``, ``minas_control`` and ``tra1-*`` deb files (here assumes``ros-indigo-ethercat-manager_1.0.0-0trusty_amd64.deb`` and ``ros-indigo-minas-control_1.0.0-0trusty_amd64.deb``). Plase it under current directory.
 
 .. code-block:: bash
 
   sudo apt-get install -y gdebi
-  sudo gdebi -n ros-indigo-ethercat-manager_0.5.1-0trusty_amd64.deb
-  sudo gdebi -n ros-indigo-minus-control_0.5.1-0trusty_amd64.deb
+  sudo gdebi -n ros-indigo-ethercat-manager_1.0.0-0trusty_amd64.deb
+  sudo gdebi -n ros-indigo-minus-control_1.0.0-0trusty_amd64.deb
   sudo gdebi -n ros-indigo-tra1-description_1.5.0-0trusty_amd64.deb
-  sudo gdebi -n ros-indigo-tra1-bringup_0.5.1-0trusty_amd64.deb
-  sudo gdebi -n ros-indigo-tra1-moveit-config_0.5.1-0trusty_amd64.deb
+  sudo gdebi -n ros-indigo-tra1-bringup_1.0.0-0trusty_amd64.deb
+  sudo gdebi -n ros-indigo-tra1-moveit-config_1.0.0-0trusty_amd64.deb
+
+Running MINAS-A5B Controller
+============================
+
+To run MINAS-A5B controller, you can start with following roslaunch command.
+
+.. code-block:: bash
+
+  roslaunch tra1_bringup tra1_bringup.launch
+
+Running ``rostopic`` command will show a list of input and output topics of this controller
+
+.. code-block:: bash
+
+  $ rostopic list
+  /diagnostics
+  /joint_states
+  /position_trajectory_controller/command
+  /position_trajectory_controller/follow_joint_trajectory/cancel
+  /position_trajectory_controller/follow_joint_trajectory/feedback
+  /position_trajectory_controller/follow_joint_trajectory/goal
+  /position_trajectory_controller/follow_joint_trajectory/result
+  /position_trajectory_controller/follow_joint_trajectory/status
+  /position_trajectory_controller/state
+  /rosout
+  /rosout_agg
+  /tf
+
+rostopic named ``/joint_states`` will show the status of each joint including
+
+-  the position of the joint (rad or m)
+-  the velocity of the joint (rad/s or m/s)
+-  the effort that is applied in the joint (Nm or N)
+
+.. code-block:: bash
+
+  $ rosmsg show sensor_msgs/JointState
+  std_msgs/Header header
+    uint32 seq
+    time stamp
+    string frame_id
+  string[] name
+  float64[] position
+  float64[] velocity
+  float64[] effort
+
+To send commands to the controller, you can use ``/position_trajectory_controller/follow_joint_trajectory/goal`` of type ``control_msgs/JointTrajectoryActionGoal``.
+
+.. code-block:: bash
+
+  $ rosmsg show control_msgs/JointTrajectoryActionGoal
+  std_msgs/Header header
+    uint32 seq
+    time stamp
+    string frame_id
+  actionlib_msgs/GoalID goal_id
+    time stamp
+    string id
+  control_msgs/JointTrajectoryGoal goal
+    trajectory_msgs/JointTrajectory trajectory
+      std_msgs/Header header
+        uint32 seq
+        time stamp
+        string frame_id
+      string[] joint_names
+      trajectory_msgs/JointTrajectoryPoint[] points
+        float64[] positions
+        float64[] velocities
+        float64[] accelerations
+        float64[] effort
+        duration time_from_start
+
+
+The ``tra1_bringup.launch`` assumes you have connected EtherCAT device to the ``eth0`` device of your machine. To run controller with custom settings, you can use ``eth`` argument.
+
+.. code-block:: bash
+
+  roslaunch tra1_bringup tra1_bringup.launch eth:=eth4
+
+If you would like to run withtout hardware devices, you can run MINAS-A5B controller with simulation mode
+
+.. code-block:: bash
+
+  roslaunch tra1_bringup tra1_bringup.launch simulation:=true
+
+To change control parameter, you can use following rosparams. These are relative to ``/main/joint1`` ... ``/main/joint6``.
+
+- torque_for_emergency_stop : Set up the torque limit at emergency stop, When setup value is 0, the torque limit for normal operation is applied. Range is 0 - 500 (%). Default value is 100 (%).
+- over_load_level : You can set up the over-load level. The overload level becomes 115[%] by setting up this to 0. Use this with 0 setup in normal operation. Set up other value only when you need to lower the over-load level. Range is 0 - 500 (%). Default value is 50 (%).
+- over_speed_level : If the motor speed exceeds this setup value, Err26.0 Over-speed protection occurs. The over-speed level becomes 1.2 times of the motor max. speed by setting up this to 0. Range is 0 - 2000 (r/min). Default value is 120 (r/min).
+- motor_working_range : You can set up the movable range of the motor against the position command input range. When the motor movement exceeds the setup value, software limit protection of Err34.0 will be triggered. Range is 0 - 1.0 (revolution). Default value is 0.0 (revolution).
+
+For more detail, see 4-50 of the manual (https://industrial.panasonic.com/content/data/MT/PDF/manual/en/acs/minas-a5-2_manu_e.pdf)
+
+- max_motor_speed : Set the maximum velocity of motor. The maximum value is limited by the 3910h(Maximum over-speed level) in internal processing.. It is tq and cst and restricts speed with the preset value of this object. Range is 0 - 4294967295 (rad/min). Default value is 120 (rad/min) (6080h / 00h)
+- max_torque : Set the maximum torque of the motor. The maximum value is limited by the maximum torque which is calculated from 3904h(Mass of motor's movable section/ Motor inertia) and 3905h(Rated motor thrust / Rated motor torque). The maximum torque of the motor varies with the motor used. Range is 0 - 65535 (0.1%). Default value is 500 (50%). (6072h / 00h)
+
+For more detail, see p.151 of the manual (https://industrial.panasonic.com/content/data/MT/PDF/refer/en/acs/SX-DSV02830_R1_00E.pdf)
+
+
+These parameters are overwrited at ``tra1_bringup.launch``. If you wan to change these parameters, rewriete launch files.
+
+To show contents of current ``tra1_bringup.launch`` file. You can use ``roscat tra1_bringup  tra1_bringup.launch`` command.
+
+
+.. code-block:: bash
+
+  <launch>
+  
+    <!-- GDB functionality -->
+    <arg name="debug" default="false" />
+    <arg name="simulation" default="false" />
+    <arg name="eth" default="eth0" />
+  
+    <!-- Load robot description -->
+    <param name="robot_description"
+      command="$(find xacro)/xacro.py '$(find tra1_description)/urdf/tra1.xacro'" />
+  
+    <rosparam>
+  main/joint1/torque_for_emergency_stop : 100  <!-- 100 % -->
+  main/joint1/over_load_level           : 100  <!-- 100 % -->
+  main/joint1/over_speed_level          : 3000 <!-- rad/min -->
+  main/joint1/motor_working_range       : 0.1  <!-- 0.1 -->
+  main/joint1/max_motor_speed           : 3000 <!-- rad/min -->
+  main/joint1/max_torque                : 50   <!-- 100% -->
+  main/joint2/torque_for_emergency_stop : 100  <!-- 100 % -->
+  main/joint2/over_load_level           : 100  <!-- 100 % -->
+  ...
+
+
+Easiest way should be copy launch file to current directory, change parameters and run that file.
+
+.. code-block:: bash
+
+  $ roscp tra1_bringup tra1_bringup.launch my_tra1_bringup.launch
+  $ emacs my_tra1_bringup.launch
+  $ roslaunch my_tra1_bringup.launch
+
+
 
 MINAS-A5B Control Tools
 =======================
 
-Before you start we  have to configure `SI1` and `SI2` input selection, Please change No. 4.01 from default setting `818181h` to `010101h` and No 4.02 from `28282h` to `020202h` using `PANATERM`_, see page 13 of the `Manual`_.
+Before you start we  have to configure ``SI1`` and ``SI2`` input selection, Please change No. 4.01 from default setting ``818181h`` to ``010101h`` and No 4.02 from ``28282h`` to ``020202h`` using `PANATERM`_, see page 13 of the `Manual`_.
 
-First you need to know the network adapter neme for the EtherCAT netwok, `ifconfig` will give you the list of network adpater of your computer, for example, at a following case, eth1 is your EtherCAT network and we'll use `eth1` here after, if you have different adapter name, please use that name when you run the application.
+First you need to know the network adapter neme for the EtherCAT netwok, ``ifconfig`` will give you the list of network adpater of your computer, for example, at a following case, eth1 is your EtherCAT network and we'll use ``eth1`` here after, if you have different adapter name, please use that name when you run the application.
 
 .. code-block:: bash
 
@@ -92,7 +228,7 @@ First you need to know the network adapter neme for the EtherCAT netwok, `ifconf
 slave_info
 ----------
 
-Now let's run `salveinfo` to show current configuration of your EtherCAT network. Please change `eth1` to your settings.
+Now let's run ``salveinfo`` to show current configuration of your EtherCAT network. Please change ``eth1`` to your settings.
 
 .. code-block:: bash
 
@@ -142,7 +278,7 @@ Now let's run `salveinfo` to show current configuration of your EtherCAT network
 simple_test
 -----------
 
-Then let's move to next step. The `simple_test` is the example program to control motors. '-h' or '--help' option will show the usages of this program.
+Then let's move to next step. The ``simple_test`` is the example program to control motors. '-h' or '--help' option will show the usages of this program.
 
 .. code-block:: bash
 
@@ -155,7 +291,7 @@ Then let's move to next step. The `simple_test` is the example program to contro
       -c, --cycliec_mode  Sample program using cyclic synchronous position(csp) mode
       -h, --help          Print this message and exit
 
-On default settings, `simple_test` will servo on, rotate about 360 degree and servo off. The `simple_test` program basically follow the instruction described in the manual, i.e Start up guide in p.3 and Motion of `pp` control mode in p. 107. Basic flow of the cpp program as follows.
+On default settings, ``simple_test`` will servo on, rotate about 360 degree and servo off. The ``simple_test`` program basically follow the instruction described in the manual, i.e Start up guide in p.3 and Motion of ``pp`` control mode in p. 107. Basic flow of the cpp program as follows.
 
 .. code-block:: cpp
 
@@ -187,7 +323,7 @@ On default settings, `simple_test` will servo on, rotate about 360 degree and se
   output.controlword   &= ~0x0010; // clear new-set-point (bit4)
   client->writeOutputs(output);
 
-To run `simple_test` with pp mode, use `-p` option.
+To run ``simple_test`` with pp mode, use ``-p`` option.
 
 .. code-block:: bash
 
@@ -312,7 +448,7 @@ To run `simple_test` with pp mode, use `-p` option.
 
 You can see some erros in the first a few seconds, until the motors servo on, but that's expected behavior and you can ingreo for now.
 
-If you run `simple_test` with `-c` option, it will servo on, rotate about 180 degree back and forth with sin curve and servo off. Basic flow of the cpp program as follows.
+If you run ``simple_test`` with ``-c`` option, it will servo on, rotate about 180 degree back and forth with sin curve and servo off. Basic flow of the cpp program as follows.
 
 .. code-block:: cpp
 
@@ -381,7 +517,7 @@ If you have somethig wrong, you can run reset command. If you still have issue, 
 main (ROS controlelr program)
 -----------------------------
 
-The `main` executable is ROS based controller program.  '-h' or '--help' option will show the usages of this program.
+The ``main`` executable is ROS based controller program.  '-h' or '--help' option will show the usages of this program.
 
 .. code-block:: bash
 
@@ -402,11 +538,11 @@ If you do not have MINAS-A5B hardwre, you can run with simulation mode
   $ rosrun minas_control main -l
   [ INFO] [1488677269.130094946]: Minas Hardware Interface in simulation mode
 
-and check the realtime capability of the ros control program by listening `/diagnostics` ROS topic.
+and check the realtime capability of the ros control program by listening ``/diagnostics`` ROS topic.
 
 ..
 
-To run controllers with physical MINAS A-5 Hardware connecting at `eth1` EtherCAT network, you can `main` program as follows. Please change `eth1` to your settings.
+To run controllers with physical MINAS A-5 Hardware connecting at ``eth1`` EtherCAT network, you can ``main`` program as follows. Please change ``eth1`` to your settings.
 
 .. code-block:: bash
 
@@ -478,7 +614,7 @@ To run controllers with physical MINAS A-5 Hardware connecting at `eth1` EtherCA
 
 You can see some erros, specially if you do not set connect 6 motors on your EtherCAT network, but still the controlle software is able to run as they use loopback driver for these joints.
 
-To check current realtime capabiliy of ROS control, you can run `rostopic echo /diagnostics`.
+To check current realtime capabiliy of ROS control, you can run ``rostopic echo /diagnostics``.
 
 .. code-block:: bash
 
@@ -552,15 +688,15 @@ Maintainer Tips
 Create DEB file
 ---------------
 
-Following command will build DEB (binary installer file for Ubuntu with which you can install software by a simple run of `gdebi` command) files.
+Following command will build DEB (binary installer file for Ubuntu with which you can install software by a simple run of ``gdebi`` command) files.
 
-Before start please add following line to your `/etc/ros/rosdep/sources.list.d/20-default.list` file
+Before start please add following line to your ``/etc/ros/rosdep/sources.list.d/20-default.list`` file
 
 .. code-block:: bash
 
   yaml file:///etc/ros/rosdep/ethercat_manager.yaml
 
-and create `ethercat_manager.yaml` file that contains
+and create ``ethercat_manager.yaml`` file that contains
 
 .. code-block:: bash
 
@@ -580,7 +716,7 @@ and create `ethercat_manager.yaml` file that contains
     ubuntu:
       apt: ros-indigo-tra1-bringup
 
-and run `rosdep update`. Then create deb fiels as follows.
+and run ``rosdep update``. Then create deb fiels as follows.
 
 .. code-block:: bash
 
@@ -595,7 +731,7 @@ and run `rosdep update`. Then create deb fiels as follows.
   catkin b tra1_bringup --no-deps --make-args debbuild_tra1_bringup
   dpkg -i ros-indigo-tra1-bringup_0.0.1-0trusty_amd64.deb
 
-To install DEB file from command line, please use `gdebi`. Using `apt-get` may fail due to missing dependent deb package, and that breaks your local apt database (wich may fixed by `sudo apt-get install -f install` as reported on the `community site <http://askubuntu.com/questions/58202/how-to-automatically-fetch-missing-dependencies-when-installing-software-from-d>`_)
+To install DEB file from command line, please use ``gdebi``. Using ``apt-get`` may fail due to missing dependent deb package, and that breaks your local apt database (wich may fixed by ``sudo apt-get install -f install`` as reported on the `community site <http://askubuntu.com/questions/58202/how-to-automatically-fetch-missing-dependencies-when-installing-software-from-d>`_)
 
 .. code-block:: bash
 
@@ -648,7 +784,7 @@ main: Cannot allocate memory
     $ getcap /opt/ros/indigo/lib/minas_control/reset
     /opt/ros/indigo/lib/minas_control/reset = cap_net_raw+ep
 
-  If you can any `capability`, please try
+  If you can any ``capability``, please try
 
   .. code-block:: bash
 
