@@ -20,8 +20,6 @@ Install Common Components
 
 First install a few components this package needs: `ROS`_ (robotics middleware)
 
-1. Install ROS.
-
   The following snippet shows a simple way to install `ROS Indigo` on Ubuntu linux 14.04 `Trusty`. For completeness, you're advised to see `ROS wiki <http://wiki.ros.org/indigo/Installation/Ubuntu>`_.
 
 .. code-block:: bash
@@ -40,17 +38,16 @@ First install a few components this package needs: `ROS`_ (robotics middleware)
 Install From Deb
 ----------------
 
-1. Obtain ``minas_control`` and ``ethercat_manager`` deb file (here assumes``ros-indigo-ethercat-manager_0.5.1-0trusty_amd64.deb`` and ``ros-indigo-minas-control_0.5.0-0trusty_amd64.deb``). Plase it under
-   current directoly.
+Obtain ``ethercat_manager``, ``minas_control`` and ``tra1-*`` deb files (here assumes``ros-indigo-ethercat-manager_1.0.0-0trusty_amd64.deb`` and ``ros-indigo-minas-control_1.0.0-0trusty_amd64.deb``). Plase it under current directory.
 
 .. code-block:: bash
 
   sudo apt-get install -y gdebi
-  sudo gdebi -n ros-indigo-ethercat-manager_0.5.1-0trusty_amd64.deb
-  sudo gdebi -n ros-indigo-minus-control_0.5.1-0trusty_amd64.deb
+  sudo gdebi -n ros-indigo-ethercat-manager_1.0.0-0trusty_amd64.deb
+  sudo gdebi -n ros-indigo-minus-control_1.0.0-0trusty_amd64.deb
   sudo gdebi -n ros-indigo-tra1-description_1.5.0-0trusty_amd64.deb
-  sudo gdebi -n ros-indigo-tra1-bringup_0.5.1-0trusty_amd64.deb
-  sudo gdebi -n ros-indigo-tra1-moveit-config_0.5.1-0trusty_amd64.deb
+  sudo gdebi -n ros-indigo-tra1-bringup_1.0.0-0trusty_amd64.deb
+  sudo gdebi -n ros-indigo-tra1-moveit-config_1.0.0-0trusty_amd64.deb
 
 Running MINAS-A5B Controller
 ============================
