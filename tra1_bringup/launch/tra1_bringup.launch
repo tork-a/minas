@@ -4,6 +4,7 @@
   <!-- GDB functionality -->
   <arg name="debug" default="false" />
   <arg name="simulation" default="false" />
+  <arg name="eth" default="eth0" />
 
   <!-- Load robot description -->
   <param name="robot_description"
@@ -13,6 +14,7 @@
   <include file="$(find minas_control)/launch/minas_control.launch" >
     <arg name="debug" value="$(arg debug)" />
     <arg name="simulation" value="$(arg simulation)" />
+    <arg name="eth" value="$(arg eth)" />
   </include>
 
   <!-- If needed, broadcast static tf for robot root -->
