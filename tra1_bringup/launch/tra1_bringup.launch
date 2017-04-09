@@ -35,7 +35,7 @@ main/joint4/over_speed_level          : 3000 <!-- rad/min -->
 main/joint4/motor_working_range       : 0.1  <!-- 0.1 -->
 main/joint4/max_motor_speed           : 3000 <!-- rad/min -->
 main/joint4/max_torque                : 50   <!-- 100% -->
-main/joint1/torque_for_emergency_stop : 100  <!-- 100 % -->
+main/joint5/torque_for_emergency_stop : 100  <!-- 100 % -->
 main/joint5/over_load_level           : 100  <!-- 100 % -->
 main/joint5/over_speed_level          : 3000 <!-- rad/min -->
 main/joint5/motor_working_range       : 0.1  <!-- 0.1 -->
