@@ -75,7 +75,7 @@ class JointControlInterface
 class EtherCATJointControlInterface : public JointControlInterface
 {
  public:
-  EtherCATJointControlInterface(ethercat::EtherCatManager* manager, int slave_no, hardware_interface::JointStateInterface& jnt_stat, hardware_interface::PositionJointInterface& jnt_cmd);
+  EtherCATJointControlInterface(ethercat::EtherCatManager* manager, int slave_no, hardware_interface::JointStateInterface& jnt_stat, hardware_interface::PositionJointInterface& jnt_cmd, int torque_for_emergency_stop, int over_load_level, int over_speed_level, double motor_working_range, int max_motor_speed, int max_torque);
   ~EtherCATJointControlInterface();
   void read();
   void write();

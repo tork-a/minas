@@ -21,6 +21,7 @@
 #include <minas_control/minas_hardware_interface.h>
 #include <getopt.h>
 #include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace minas_control
 {
@@ -28,7 +29,7 @@ namespace minas_control
 #define PULSE_PER_REVOLUTE ( (1048576 / (2 * M_PI) ) * 101 ) // 20 bit / 101 reduction
   //#define PULSE_PER_REVOLUTE ( ( 131072 / (2 * M_PI) ) * 101 )// 17 bit / 101 reduction
 
-  EtherCATJointControlInterface::EtherCATJointControlInterface(ethercat::EtherCatManager* manager, int slave_no, hardware_interface::JointStateInterface& jnt_stat, hardware_interface::PositionJointInterface& jnt_cmd) : JointControlInterface(slave_no, jnt_stat, jnt_cmd)
+  EtherCATJointControlInterface::EtherCATJointControlInterface(ethercat::EtherCatManager* manager, int slave_no, hardware_interface::JointStateInterface& jnt_stat, hardware_interface::PositionJointInterface& jnt_cmd, int torque_for_emergency_stop, int over_load_level, int over_speed_level, double motor_working_range, int max_motor_speed, int max_torque) : JointControlInterface(slave_no, jnt_stat, jnt_cmd)
   {
 
     // EtherCAT
@@ -162,10 +163,28 @@ namespace minas_control
       int i;
       for (i = 1; i <= n_dof_; i++ )
 	{
+          std::string joint_name("~joint" + boost::lexical_cast<std::string>(i));
+          int torque_for_emergency_stop, over_load_level, over_speed_level;
+          double motor_working_range;
+          ros::param::param<int>(joint_name + "/torque_for_emergency_stop", torque_for_emergency_stop, 100); // 100%
+          ros::param::param<int>(joint_name + "/over_load_level", over_load_level, 50); // 50%
+          ros::param::param<int>(joint_name + "/over_speed_level", over_speed_level, 120); // r/min
+          ros::param::param<double>(joint_name + "/motor_working_range", motor_working_range, 0.1); // 0.1
+          ROS_INFO_STREAM_NAMED("minas", joint_name + "/torque_for_emergency_stop : " << torque_for_emergency_stop);
+          ROS_INFO_STREAM_NAMED("minas", joint_name + "/over_load_level           : " << over_load_level);
+          ROS_INFO_STREAM_NAMED("minas", joint_name + "/over_speed_level          : " << over_speed_level);
+          ROS_INFO_STREAM_NAMED("minas", joint_name + "/motor_working_range       : " << motor_working_range);
+          int max_motor_speed, max_torque;
+          ros::param::param<int>(joint_name + "/max_motor_speed", max_motor_speed, 120); // rad/min
+          ros::param::param<int>(joint_name + "/max_torque", max_torque, 500); // 50% (unit 0.1%)
+          ROS_INFO_STREAM_NAMED("minas", joint_name + "/max_motor_speed           : " << max_motor_speed);
+          ROS_INFO_STREAM_NAMED("minas", joint_name + "/max_torque                : " << max_torque);
 	  registerControl(new EtherCATJointControlInterface(manager, i,
 							    joint_state_interface,
-							    joint_position_interface
-							    ));
+							    joint_position_interface,
+                                                            torque_for_emergency_stop, over_load_level, over_speed_level, motor_working_range,
+                                                            max_motor_speed, max_torque
+                                                            ));
 	}
       for (; i <= 6; i++ )
 	{

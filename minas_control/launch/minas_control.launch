@@ -14,6 +14,44 @@
   <node name="main" pkg="minas_control"
         type="main" args="$(arg control_args)"
         respawn="false" output="screen" launch-prefix="$(arg launch_prefix)">
+    <rosparam>
+joint1/torque_for_emergency_stop : 100  <!-- 100 % -->
+joint1/over_load_level           : 100  <!-- 100 % -->
+joint1/over_speed_level          : 3000 <!-- rad/min -->
+joint1/motor_working_range       : 0.1  <!-- 0.1 -->
+joint1/max_motor_speed           : 3000 <!-- rad/min -->
+joint1/max_torque                : 50   <!-- 100% -->
+joint2/torque_for_emergency_stop : 100  <!-- 100 % -->
+joint2/over_load_level           : 100  <!-- 100 % -->
+joint2/over_speed_level          : 3000 <!-- rad/min -->
+joint2/motor_working_range       : 0.1  <!-- 0.1 -->
+joint2/max_motor_speed           : 3000 <!-- rad/min -->
+joint2/max_torque                : 50   <!-- 100% -->
+joint3/torque_for_emergency_stop : 100  <!-- 100 % -->
+joint3/over_load_level           : 100  <!-- 100 % -->
+joint3/over_speed_level          : 3000 <!-- rad/min -->
+joint3/motor_working_range       : 0.1  <!-- 0.1 -->
+joint3/max_motor_speed           : 3000 <!-- rad/min -->
+joint3/max_torque                : 50   <!-- 100% -->
+joint4/torque_for_emergency_stop : 100  <!-- 100 % -->
+joint4/over_load_level           : 100  <!-- 100 % -->
+joint4/over_speed_level          : 3000 <!-- rad/min -->
+joint4/motor_working_range       : 0.1  <!-- 0.1 -->
+joint4/max_motor_speed           : 3000 <!-- rad/min -->
+joint4/max_torque                : 50   <!-- 100% -->
+joint1/torque_for_emergency_stop : 100  <!-- 100 % -->
+joint5/over_load_level           : 100  <!-- 100 % -->
+joint5/over_speed_level          : 3000 <!-- rad/min -->
+joint5/motor_working_range       : 0.1  <!-- 0.1 -->
+joint5/max_motor_speed           : 3000 <!-- rad/min -->
+joint5/max_torque                : 50   <!-- 100% -->
+joint6/torque_for_emergency_stop : 100  <!-- 100 % -->
+joint6/over_load_level           : 100  <!-- 100 % -->
+joint6/over_speed_level          : 3000 <!-- rad/min -->
+joint6/motor_working_range       : 0.1  <!-- 0.1 -->
+joint6/max_motor_speed           : 3000 <!-- rad/min -->
+joint6/max_torque                : 50   <!-- 100% -->
+    </rosparam>
   </node>
 
 </launch>
