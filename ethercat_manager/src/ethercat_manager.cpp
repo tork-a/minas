@@ -167,6 +167,7 @@ namespace ethercat {
 
 EtherCatManager::EtherCatManager(const std::string& ifname)
   : ifname_(ifname), 
+    num_clients_(0),
     stop_flag_(false)
 {
   if (initSoem(ifname)) 
@@ -231,7 +232,12 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
   {
     // MINAS-A5B Serial Man = 066Fh, ID = [5/D]****[0/4/8][0-F]*
     printf(" Man: %8.8x ID: %8.8x Rev: %8.8x %s\n", (int)ec_slave[cnt].eep_man, (int)ec_slave[cnt].eep_id, (int)ec_slave[cnt].eep_rev, IF_MINAS(ec_slave[cnt])?" MINAS Drivers":"");
+    if(IF_MINAS(ec_slave[cnt])) {
+      num_clients_++;
+    }
   }
+  printf("Found %d MINAS Drivers\n", num_clients_);
+
 
   /*
     SET PDO maping 4    SX-DSV02470 p.52
@@ -390,7 +396,7 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
 
 int EtherCatManager::getNumClinets() const
 {
-  return ec_slavecount;
+  return num_clients_;
 }
 
 void EtherCatManager::write(int slave_no, uint8_t channel, uint8_t value)

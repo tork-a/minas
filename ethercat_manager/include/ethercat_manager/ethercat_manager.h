@@ -137,6 +137,7 @@ private:
 
   const std::string ifname_;
   uint8_t iomap_[4096];
+  int num_clients_;
   boost::thread cycle_thread_;
   mutable boost::mutex iomap_mutex_;
   bool stop_flag_;
