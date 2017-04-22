@@ -62,3 +62,8 @@ test:
     - cp ~/catkin_ws/src/minas/minas_control/output/minas_control-*.pdf $CIRCLE_ARTIFACTS/
     - cp ~/catkin_ws/src/minas/*.deb $CIRCLE_ARTIFACTS/
 
+deployment:
+  release:
+    tag: /[0-9]+(\.[0-9]+)*/
+    commands:
+      - ./.github_release.sh
