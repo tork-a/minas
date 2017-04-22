@@ -24,4 +24,5 @@ test:
     - . /opt/ros/$ROS_DISTRO/setup.bash && cd ~/catkin_ws && rosdep install --from-paths src/ --ignore-src -y 
     - . /opt/ros/$ROS_DISTRO/setup.bash && cd ~/catkin_ws && catkin_make
     - . /opt/ros/$ROS_DISTRO/setup.bash && cd ~/catkin_ws && catkin_make run_tests
+    - . /opt/ros/$ROS_DISTRO/setup.bash && cd ~/catkin_ws && catkin_test_results --verbose build
 
