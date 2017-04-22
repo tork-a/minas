@@ -1,8 +1,10 @@
 #!/bin/bash
 
 set -e
-#set -x
+set -x
 
+sudo apt-get install -y git golang-1.6-go
+sudo ln -sf /usr/lib/go-1.6/bin/go  /usr/local/bin/go
 git clone -b v2.2.2 https://github.com/github/hub.git;
 (cd hub; ./script/build; sudo cp hub /usr/local/bin/)
 
