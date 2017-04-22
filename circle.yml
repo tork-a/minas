@@ -21,8 +21,44 @@ dependencies:
     - cd ~/catkin_ws/src && ln -sf ~/$CIRCLE_PROJECT_REPONAME $CIRCLE_PROJECT_REPONAME
 test:
   override:
+    # compile
     - . /opt/ros/$ROS_DISTRO/setup.bash && cd ~/catkin_ws && rosdep install --from-paths src/ --ignore-src -y 
     - . /opt/ros/$ROS_DISTRO/setup.bash && cd ~/catkin_ws && catkin_make
     - . /opt/ros/$ROS_DISTRO/setup.bash && cd ~/catkin_ws && catkin_make run_tests
     - . /opt/ros/$ROS_DISTRO/setup.bash && cd ~/catkin_ws && catkin_test_results --verbose build
+    # doc build
+    - sudo apt-get install -y -q python-sphinx doxygen pandoc python-catkin-sphinx
+    - sudo apt-get install -y -q texlive-latex-base texlive-latex-recommended texlive-fonts-recommended texlive-latex-extra
+    - . /opt/ros/$ROS_DISTRO/setup.bash && cd ~/catkin_ws && catkin_make --pkg minas_control --make-args docbuild_minas_control
+    # deb build
+    - sudo apt-get install -y -q python-bloom
+    - sudo sh -c "echo \"yaml file:///etc/ros/rosdep/minas.yaml\" > /etc/ros/rosdep/sources.list.d/20-default.list"
+    - >
+      sudo sh -c "cat <<EOF > /etc/ros/rosdep/minas.yaml
+        ethercat_manager:
+          ubuntu:
+            apt: ros-indigo-ethercat-manager
+        minas_control:
+          ubuntu:
+            apt: ros-indigo-minas-control
+        tra1_description:
+          ubuntu:
+            apt: ros-indigo-tra1-description
+        tra1_moveit_config:
+          ubuntu:
+            apt: ros-indigo-tra1-moveit-config
+        tra1_bringup:
+          ubuntu:
+            apt: ros-indigo-tra1-bringup
+      EOF"
+    - rosdep update
+    - . /opt/ros/$ROS_DISTRO/setup.bash && cd ~/catkin_ws && set -x; for package in ethercat_manager minas_control tra1_description tra1_moveit_config tra1_bringup; do
+        catkin_make --pkg ${package} --make-args debbuild_${package};
+        package=$(echo $package | tr '_' '-');
+        sudo dpkg -i src/minas/ros-indigo-${package}_*.deb || (sudo rm /var/lib/dpkg/info/ros-indigo-${package}.postinst ; sudo dpkg --configure ros-indigo-${package});
+      done
+    # install and test
+    - sudo apt-get install -y gdebi
+    - cp ~/catkin_ws/src/minas/minas_control/output/minas_control-*.pdf $CIRCLE_ARTIFACTS/
+    - cp ~/catkin_ws/src/minas/*.deb $CIRCLE_ARTIFACTS/
 
