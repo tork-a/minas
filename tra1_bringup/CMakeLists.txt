@@ -17,7 +17,7 @@ catkin_package()
 #############
 
 ## Mark executables and/or libraries for installation
-install(DIRECTORY config launch
+install(DIRECTORY config launch test
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 #############
@@ -30,6 +30,12 @@ if(CATKIN_ENABLE_TESTING)
   foreach(LAUNCH_FILE ${LAUNCH_FILES})
     message(status "Testing ${LAUNCH_FILE}")
     roslaunch_add_file_check(${LAUNCH_FILE})
+  endforeach()
+
+  file(GLOB TEST_FILES test/*.test)
+  foreach(TEST_FILE ${TEST_FILES})
+    message(status "Testing ${TEST_FILE}")
+    add_rostest(${TEST_FILE})
   endforeach()
 endif()
 
