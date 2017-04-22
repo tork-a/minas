@@ -1,0 +1,16 @@
+<launch>
+
+  <include file="$(find tra1_bringup)/launch/tra1_bringup.launch" >
+    <arg name="simulation" default="true" />
+  </include>
+
+  <include file="$(find tra1_bringup)/launch/tra1_moveit.launch" >
+  </include>
+
+  <param name="move_group_status_hz_test/topic" value="move_group/status" />  
+  <param name="move_group_status_hz_test/hz" value="5.0" />
+  <param name="move_group_status_hz_test/hzerror" value="1.5" />
+  <param name="move_group_status_hz_test/test_duration" value="5.0" />    
+  <test test-name="move_group_status_test" pkg="rostest" type="hztest" name="move_group_status_hz_test" />
+
+</launch>
