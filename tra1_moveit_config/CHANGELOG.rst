@@ -2,8 +2,8 @@
 Changelog for package tra1_moveit_config
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.0 (2017-04-22)
+------------------
 * add test codes  (`#39 <https://github.com/tork-a/minas/pull/39`_)
   * tra1_moveit_config/CMakeLists.txt: check only woking launch files
   * tra1_moveit_config/package.xml: add more run_depends

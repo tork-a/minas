@@ -2,8 +2,8 @@
 Changelog for package tra1_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.0 (2017-04-22)
+------------------
 * add test codes  (`#39 <https://github.com/tork-a/minas/pull/39`_)
   * tra1_bringup/package.xml: add joint_state_controller and position_controllers to package.xml
   * tra1_bringup/CMakeList.txt: add test lauch files

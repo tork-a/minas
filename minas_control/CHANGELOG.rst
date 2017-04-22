@@ -2,8 +2,8 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.0 (2017-04-22)
+------------------
 * add test codes (`#39 <https://github.com/tork-a/minas/pull/39`_)
   * minas_control/src/main.cpp: continue running evern if mlockall failed, when we run with simulaiton
   * add depends to diagnostic_updator
