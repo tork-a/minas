@@ -2,6 +2,14 @@
 Changelog for package tra1_moveit_config
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add test codes  (`#39 <https://github.com/tork-a/minas/pull/39`_)
+  * tra1_moveit_config/CMakeLists.txt: check only woking launch files
+  * tra1_moveit_config/package.xml: add more run_depends
+* set default planner to RRTConnectkConfigDefault (`#37 <https://github.com/tork-a/minas/pull/37`_)
+* Contributors: Tokyo Opensource Robotics Developer 534
+
 0.5.2 (2017-04-01)
 ------------------
 

@@ -2,6 +2,19 @@
 Changelog for package tra1_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add test codes  (`#39 <https://github.com/tork-a/minas/pull/39`_)
+  * tra1_bringup/package.xml: add joint_state_controller and position_controllers to package.xml
+  * tra1_bringup/CMakeList.txt: add test lauch files
+  * tra1_bringup/package.xml: add more run_depends
+* 実験の際に変更するパラメータについてrosparam化する (`#33 <https://github.com/tork-a/minas/pull/33`_)
+  * tra1_bringup.launch/ joint1->joint5 : fix typo
+  * move custom controller parameters for tra1 to tra1_bringup/launch/tra1_bringup.lauch
+  * minas_control.launch add eth arg to set ether device name
+* Add timeout to shutdown controllers (`#35 <https://github.com/tork-a/minas/pull/35`_)
+* Contributors: Ryosuke Tajima, Tokyo Opensource Robotics Developer 534
+
 0.5.2 (2017-04-01)
 ------------------
 

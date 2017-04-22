@@ -2,6 +2,13 @@
 Changelog for package ethercat_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add test codes (`#39 <https://github.com/tork-a/minas/pull/39`_)
+* check if slaves are MINAS or not (`#38 <https://github.com/tork-a/minas/pull/38`_)
+  * getNumClients() returns only MINAS drivers
+* Contributors: Tokyo Opensource Robotics Developer 534
+
 0.5.2 (2017-04-01)
 ------------------
 

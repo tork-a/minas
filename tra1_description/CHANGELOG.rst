@@ -2,6 +2,12 @@
 Changelog for package tra1_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add test codes (`#39 <https://github.com/tork-a/minas/pull/39`_)
+  * tra1_description/package.xml: add more run_depends
+* Contributors: Tokyo Opensource Robotics Developer 534
+
 0.5.2 (2017-04-01)
 ------------------
 

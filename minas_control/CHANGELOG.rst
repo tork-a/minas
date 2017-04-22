@@ -2,6 +2,20 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add test codes (`#39 <https://github.com/tork-a/minas/pull/39`_)
+  * minas_control/src/main.cpp: continue running evern if mlockall failed, when we run with simulaiton
+  * add depends to diagnostic_updator
+* use rosparam to set control param (`#33 <https://github.com/tork-a/minas/pull/33`_)
+  * update install process, 1.0.0
+  * doc/index.rst : use two-backquote instaad of backquote to show code block
+  * doc/index.rst : comment on how to run tra1_bringup.launch and set controller parameters
+  * use getParamFromROS function, read and display parameters in simulation mode too
+  * move custom controller parameters for tra1 to tra1_bringup/launch/tra1_bringup.lauch
+  * minas_control.launch add eth arg to set ether device name
+* Contributors: Tokyo Opensource Robotics Developer 534
+
 0.5.2 (2017-04-01)
 ------------------
 * CMakeLists.txt: set INSTALL_RPARH_USE_LINK_PATH for preserving RPATH, fix `#20 <https://github.com/tork-a/minas/issues/20>`_
