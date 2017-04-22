@@ -13,8 +13,13 @@
   <build_depend>minas_control</build_depend>
   <build_depend>tra1_description</build_depend>
 
+  <run_depend>controller_manager</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  <run_depend>tf</run_depend>
+
   <run_depend>minas_control</run_depend>
   <run_depend>tra1_description</run_depend>
+  <run_depend>tra1_moveit_config</run_depend>
 
   <export>
   </export>
