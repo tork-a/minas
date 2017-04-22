@@ -439,11 +439,12 @@ static pthread_attr_t controlThreadAttr;
 
 int main(int argc, char *argv[])
 {
+  bool mlock_all = true;
   // Keep the kernel from swapping us out
   if (mlockall(MCL_CURRENT | MCL_FUTURE) < 0)
   {
     perror("Failed to lock memory. It is recommended to set permission to executables, for example: sudo setcap cap_net_raw,cap_ipc_lock=+ep main");
-    exit(EXIT_FAILURE);
+    mlock_all = false;
   }
 
   // Initialize ROS and parse command-line arguments
@@ -487,6 +488,14 @@ int main(int argc, char *argv[])
         g_options.period = fabs(atof(optarg))*1e+6;
         break;
     }
+  }
+  if ( mlock_all == false )
+    if ( g_options.simulation_ == true) {
+      ROS_WARN("Continue running without mlockall");
+    }
+  if ( g_options.simulation_ == false ) {
+    perror("Exitting .. real robots needs mlockall to run in realtime");
+    exit(EXIT_FAILURE);
   }
   if (optind < argc)
     Usage("Extra arguments");
