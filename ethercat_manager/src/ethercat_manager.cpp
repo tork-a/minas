@@ -167,6 +167,7 @@ namespace ethercat {
 
 EtherCatManager::EtherCatManager(const std::string& ifname)
   : ifname_(ifname), 
+    num_clients_(0),
     stop_flag_(false)
 {
   if (initSoem(ifname)) 
@@ -197,6 +198,7 @@ EtherCatManager::~EtherCatManager()
   cycle_thread_.join();
 }
 
+#define IF_MINAS(_ec_slave) (((int)_ec_slave.eep_man == 0x066f) & ((((0xf0000000&(int)ec_slave[cnt].eep_id)>>28) == 0x5) || (((0xf0000000&(int)ec_slave[cnt].eep_id)>>28) == 0xD)))
 bool EtherCatManager::initSoem(const std::string& ifname) {
   // Copy string contents because SOEM library doesn't 
   // practice const correctness
@@ -226,6 +228,16 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
   }
 
   printf("SOEM found and configured %d slaves\n", ec_slavecount);
+  for( int cnt = 1 ; cnt <= ec_slavecount ; cnt++)
+  {
+    // MINAS-A5B Serial Man = 066Fh, ID = [5/D]****[0/4/8][0-F]*
+    printf(" Man: %8.8x ID: %8.8x Rev: %8.8x %s\n", (int)ec_slave[cnt].eep_man, (int)ec_slave[cnt].eep_id, (int)ec_slave[cnt].eep_rev, IF_MINAS(ec_slave[cnt])?" MINAS Drivers":"");
+    if(IF_MINAS(ec_slave[cnt])) {
+      num_clients_++;
+    }
+  }
+  printf("Found %d MINAS Drivers\n", num_clients_);
+
 
   /*
     SET PDO maping 4    SX-DSV02470 p.52
@@ -258,6 +270,7 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
   // extend PDO mapping 4 see p. 53 of SX-DSV02470
   for( int cnt = 1 ; cnt <= ec_slavecount ; cnt++)
     {
+      if (! IF_MINAS(ec_slave[cnt])) continue;
       int ret = 0, l;
       uint8_t num_entries;
       l = sizeof(num_entries);
@@ -279,6 +292,7 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
   // use PDO mapping 4
   for( int cnt = 1 ; cnt <= ec_slavecount ; cnt++)
     {
+      if (! IF_MINAS(ec_slave[cnt])) continue;
       int ret = 0, l;
       uint8_t num_pdo ;
       // set 0 change PDO mapping index
@@ -345,6 +359,7 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
   ec_readstate();
   for( int cnt = 1 ; cnt <= ec_slavecount ; cnt++)
     {
+      if (! IF_MINAS(ec_slave[cnt])) continue;
       printf("\nSlave:%d\n Name:%s\n Output size: %dbits\n Input size: %dbits\n State: %d\n Delay: %d[ns]\n Has DC: %d\n",
 	     cnt, ec_slave[cnt].name, ec_slave[cnt].Obits, ec_slave[cnt].Ibits,
 	     ec_slave[cnt].state, ec_slave[cnt].pdelay, ec_slave[cnt].hasdc);
@@ -358,6 +373,7 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
 
   for( int cnt = 1 ; cnt <= ec_slavecount ; cnt++)
     {
+      if (! IF_MINAS(ec_slave[cnt])) continue;
       int ret = 0, l;
       uint16_t sync_mode;
       uint32_t cycle_time;
@@ -380,7 +396,7 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
 
 int EtherCatManager::getNumClinets() const
 {
-  return ec_slavecount;
+  return num_clients_;
 }
 
 void EtherCatManager::write(int slave_no, uint8_t channel, uint8_t value)
