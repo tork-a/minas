@@ -15,7 +15,7 @@ install(DIRECTORY config DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 if(CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest roslaunch)
-  file(GLOB LAUNCH_FILES launch/*.launch)
+  file(GLOB LAUNCH_FILES launch/planning_context.launch launch/demo.launch launch/joystick_control.launch launch/move_group.launch launch/moveit_rviz.launch)
   foreach(LAUNCH_FILE ${LAUNCH_FILES})
     message(status "Testing ${LAUNCH_FILE}")
     roslaunch_add_file_check(${LAUNCH_FILE})
