@@ -14,6 +14,7 @@ dependencies:
     - wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
     - sudo apt-get update
     - sudo apt-get install -y -q python-catkin-pkg python-rosdep ros-$ROS_DISTRO-catkin
+    - sudo apt-get install -y -q mongodb # to install ros-indigo-warehouse-ros
     - sudo rosdep init && rosdep update
   override:
     - mkdir -p ~/catkin_ws/src
