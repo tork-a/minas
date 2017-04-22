@@ -41,8 +41,12 @@
   <!--   <test_depend>gtest</test_depend> -->
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>xacro</build_depend>
-  <run_depend>xacro</run_depend>
 
+  <run_depend>joint_state_publisher</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  <run_depend>rviz</run_depend>
+  <run_depend>tf</run_depend>
+  <run_depend>xacro</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
