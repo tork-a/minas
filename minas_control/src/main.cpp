@@ -490,9 +490,11 @@ int main(int argc, char *argv[])
     }
   }
   if ( mlock_all == false ) {
+    // when mlock is false, on simulation, it'ok
     if ( g_options.simulation_ == true) {
       ROS_WARN("Continue running without mlockall");
     }
+    // on real robot, something wrong, forget to setcap cap_net_raw,cap_ipc_lock=+ep
     if ( g_options.simulation_ == false ) {
       perror("Exitting .. real robots needs mlockall to run in realtime");
       exit(EXIT_FAILURE);
