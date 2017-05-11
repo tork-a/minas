@@ -489,13 +489,14 @@ int main(int argc, char *argv[])
         break;
     }
   }
-  if ( mlock_all == false )
+  if ( mlock_all == false ) {
     if ( g_options.simulation_ == true) {
       ROS_WARN("Continue running without mlockall");
     }
-  if ( g_options.simulation_ == false ) {
-    perror("Exitting .. real robots needs mlockall to run in realtime");
-    exit(EXIT_FAILURE);
+    if ( g_options.simulation_ == false ) {
+      perror("Exitting .. real robots needs mlockall to run in realtime");
+      exit(EXIT_FAILURE);
+    }
   }
   if (optind < argc)
     Usage("Extra arguments");
