@@ -40,10 +40,10 @@ namespace minas_control
     client->reset();
 
     // set paramete from PANATERM test program
-    client->setTrqueForEmergencyStop(torque_for_emergency_stop); // 100%
-    client->setOverLoadLevel(over_load_level);          // 50%
-    client->setOverSpeedLevel(over_speed_level);        // r/min
-    client->setMotorWorkingRange(motor_working_range);  // 0.1
+    client->setTrqueForEmergencyStop(torque_for_emergency_stop); // unit [%]
+    client->setOverLoadLevel(over_load_level);          // unit [%]
+    client->setOverSpeedLevel(over_speed_level);        // [r/min]
+    client->setMotorWorkingRange(motor_working_range);  // (unit 0.1, full range is 1)
 
     client->setInterpolationTimePeriod(4000);     // 4 msec
 
