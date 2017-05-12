@@ -2,6 +2,15 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add more ROS_INFO message while insitializeing
+* use current readInputs and wait 10msec
+* servoon/servooff : printPDSstatus once every seconds
+* call reset before servooff in shutdown
+* Improve servo ON time
+* Contributors: Ryosuke Tajima, Tokyo Opensource Robotics Developer 534
+
 1.0.1 (2017-05-12)
 ------------------
 * fix comments on params

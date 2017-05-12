@@ -2,6 +2,9 @@
 Changelog for package tra1_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.1 (2017-05-12)
 ------------------
 * fix comments on params
