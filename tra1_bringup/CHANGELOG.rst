@@ -2,6 +2,13 @@
 Changelog for package tra1_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix comments on params
+* On site fix 5/11 by Tajima
+* add joint_trajectory_controller to run_depend
+* Contributors: Ryosuke Tajima, Tokyo Opensource Robotics Developer 534
+
 1.0.0 (2017-04-22)
 ------------------
 * add test codes  (`#39 <https://github.com/tork-a/minas/pull/39`_)

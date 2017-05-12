@@ -2,6 +2,14 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* fix comments on params
+* On site fix 5/11 by Tajima
+* add comment
+* fix if condition
+* Contributors: Ryosuke Tajima, Tokyo Opensource Robotics Developer 534
+
 1.0.0 (2017-04-22)
 ------------------
 * add test codes (`#39 <https://github.com/tork-a/minas/pull/39`_)
