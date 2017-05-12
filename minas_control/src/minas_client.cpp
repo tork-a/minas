@@ -155,6 +155,7 @@ void MinasClient::servoOn()
   MinasOutput output;
   memset(&output, 0x00, sizeof(MinasOutput));
   output.operation_mode = 1; // pp (profile position mode)
+  int loop = 0;
   while (getPDSStatus(input) != OPERATION_ENABLED) {
     switch ( getPDSStatus(input) ) {
       case SWITCH_DISABLED:
@@ -175,7 +176,7 @@ void MinasClient::servoOn()
     writeOutputs(output);
     usleep(10*1000);
     input = readInputs();
-    printPDSStatus(input);
+    if (loop++ % 100 == 1) printPDSStatus(input);
   }
 }
 
@@ -185,6 +186,7 @@ void MinasClient::servoOff()
   printPDSStatus(input);
   MinasOutput output;
   memset(&output, 0x00, sizeof(MinasOutput));
+  int loop = 0;
   while (getPDSStatus(input) != SWITCH_DISABLED) {
     switch ( getPDSStatus(input) ) {
       case READY_SWITCH:
@@ -204,7 +206,7 @@ void MinasClient::servoOff()
     writeOutputs(output);
     usleep(10*1000);
     input = readInputs();
-    printPDSStatus(input);
+    if (loop++ % 100 == 1) printPDSStatus(input);
   }
 }
 
