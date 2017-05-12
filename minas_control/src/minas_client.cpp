@@ -135,13 +135,15 @@ void MinasClient::reset()
   output.controlword = 0x0080; // fault reset
   output.operation_mode = 0x01; // position profile mode
   writeOutputs(output);
+  usleep(10*1000);
+  input = readInputs();
 
   while ( input.error_code != 0 ) {
-    sleep(1);
-    printf("Waiting for Fault Reset...\n");
-    input = readInputs();
     printf("error_code = %04x, status_word %04x, operation_mode = %2d, position = %08x\n",
 	   input.error_code, input.statusword, input.operation_mode, input.position_actual_value);
+    printf("Waiting for Fault Reset...\n");
+    sleep(1);
+    input = readInputs();
   }
   printf("Fault was cleared\n");
 }
