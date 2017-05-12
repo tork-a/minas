@@ -2,8 +2,8 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.1 (2017-05-12)
+------------------
 * fix comments on params
 * On site fix 5/11 by Tajima
 * add comment
