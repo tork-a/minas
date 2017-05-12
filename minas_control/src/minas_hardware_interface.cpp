@@ -31,29 +31,38 @@ namespace minas_control
 
   EtherCATJointControlInterface::EtherCATJointControlInterface(ethercat::EtherCatManager* manager, int slave_no, hardware_interface::JointStateInterface& jnt_stat, hardware_interface::PositionJointInterface& jnt_cmd, int torque_for_emergency_stop, int over_load_level, int over_speed_level, double motor_working_range, int max_motor_speed, int max_torque) : JointControlInterface(slave_no, jnt_stat, jnt_cmd)
   {
-
+    ROS_INFO("Initialize EtherCATJoint (%d)", slave_no);
     // EtherCAT
     int operation_mode = 0x08; // (csp) cyclic synchronous position mode
 
     client = new MinasClient(*manager, slave_no);
 
+    ROS_INFO("Initialize EtherCATJoint (reset)");
     client->reset();
 
     // set paramete from PANATERM test program
+    ROS_INFO("Initialize EtherCATJoint (TorqueForEmergencyStop %d)", torque_for_emergency_stop);
     client->setTrqueForEmergencyStop(torque_for_emergency_stop); // unit [%]
+    ROS_INFO("Initialize EtherCATJoint (OverLoadLevel %d)", over_load_level);
     client->setOverLoadLevel(over_load_level);          // unit [%]
+    ROS_INFO("Initialize EtherCATJoint (OverSpeedLevel %d)", over_speed_level);
     client->setOverSpeedLevel(over_speed_level);        // [r/min]
+    ROS_INFO("Initialize EtherCATJoint (MotorWorkingRange %.1f)", motor_working_range);
     client->setMotorWorkingRange(motor_working_range);  // (unit 0.1, full range is 1)
 
+    ROS_INFO("Initialize EtherCATJoint (InterpolationTimePeriod)");
     client->setInterpolationTimePeriod(4000);     // 4 msec
 
     // servo on
+    ROS_INFO("Initialize EtherCATJoint (servoOn)");
     client->servoOn();
 
     // get current positoin
+    ROS_INFO("Initialize EtherCATJoint (readInputs)");
     input = client->readInputs();
     int32 current_position = input.position_actual_value;
 
+    ROS_INFO("Initialize EtherCATJoint (set target position)");
     // set target position
     memset(&output, 0x00, sizeof(minas_control::MinasOutput));
     if ( operation_mode == 0x01 )
@@ -77,13 +86,16 @@ namespace minas_control
     //output.operation_mode = 0x01; // (pp) position profile mode
 
     // set profile velocity
+    ROS_INFO("Initialize EtherCATJoint (setProfileVelocity)");
     client->setProfileVelocity(0x20000000);
 
+    ROS_INFO("Initialize EtherCATJoint (pp control model setup)");
     // pp control model setup (see statusword(6041.h) 3) p.107)
     client->writeOutputs(output);
     while ( ! (input.statusword & 0x1000) ) {// bit12 (set-point-acknowledge)
       input = client->readInputs();
     }
+    ROS_INFO("Initialize EtherCATJoint (clear new set point)");
     output.controlword   &= ~0x0010; // clear new-set-point (bit4)
     client->writeOutputs(output);
 
@@ -91,6 +103,7 @@ namespace minas_control
     ROS_WARN("position offset = %08x", output.position_offset);
     joint.cmd_ = joint.pos_ = current_position / (PULSE_PER_REVOLUTE);
     joint.vel_ = joint.eff_ = 0;
+    ROS_INFO("Initialize EtherCATJoint .. done");
   }
 
   EtherCATJointControlInterface::~EtherCATJointControlInterface()
@@ -105,6 +118,7 @@ namespace minas_control
     ROS_INFO_STREAM_NAMED("minas", joint.name_ + " shutdown()");
     client->printPDSStatus(input);
     client->printPDSOperation(input);
+    client->reset();
     client->servoOff();
   }
 
