@@ -105,6 +105,7 @@ namespace minas_control
     ROS_INFO_STREAM_NAMED("minas", joint.name_ + " shutdown()");
     client->printPDSStatus(input);
     client->printPDSOperation(input);
+    client->reset();
     client->servoOff();
   }
 
