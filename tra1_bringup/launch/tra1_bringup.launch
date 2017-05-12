@@ -11,42 +11,42 @@
     command="$(find xacro)/xacro.py '$(find tra1_description)/urdf/tra1.xacro'" />
 
   <rosparam>
-main/joint1/torque_for_emergency_stop : 100  <!-- 100 % -->
-main/joint1/over_load_level           : 100  <!-- 100 % -->
-main/joint1/over_speed_level          : 3000 <!-- rad/min -->
-main/joint1/motor_working_range       : 0.1  <!-- 0.1 -->
+main/joint1/torque_for_emergency_stop : 0  <!-- 0 % -->
+main/joint1/over_load_level           : 0  <!-- 0 % -->
+main/joint1/over_speed_level          : 0  <!-- rad/min -->
+main/joint1/motor_working_range       : 1    <!-- 1 : full range-->
 main/joint1/max_motor_speed           : 3000 <!-- rad/min -->
-main/joint1/max_torque                : 50   <!-- 100% -->
-main/joint2/torque_for_emergency_stop : 100  <!-- 100 % -->
-main/joint2/over_load_level           : 100  <!-- 100 % -->
-main/joint2/over_speed_level          : 3000 <!-- rad/min -->
-main/joint2/motor_working_range       : 0.1  <!-- 0.1 -->
-main/joint2/max_motor_speed           : 3000 <!-- rad/min -->
-main/joint2/max_torque                : 50   <!-- 100% -->
-main/joint3/torque_for_emergency_stop : 100  <!-- 100 % -->
-main/joint3/over_load_level           : 100  <!-- 100 % -->
-main/joint3/over_speed_level          : 3000 <!-- rad/min -->
-main/joint3/motor_working_range       : 0.1  <!-- 0.1 -->
-main/joint3/max_motor_speed           : 3000 <!-- rad/min -->
-main/joint3/max_torque                : 50   <!-- 100% -->
-main/joint4/torque_for_emergency_stop : 100  <!-- 100 % -->
-main/joint4/over_load_level           : 100  <!-- 100 % -->
-main/joint4/over_speed_level          : 3000 <!-- rad/min -->
-main/joint4/motor_working_range       : 0.1  <!-- 0.1 -->
-main/joint4/max_motor_speed           : 3000 <!-- rad/min -->
-main/joint4/max_torque                : 50   <!-- 100% -->
-main/joint5/torque_for_emergency_stop : 100  <!-- 100 % -->
-main/joint5/over_load_level           : 100  <!-- 100 % -->
-main/joint5/over_speed_level          : 3000 <!-- rad/min -->
-main/joint5/motor_working_range       : 0.1  <!-- 0.1 -->
-main/joint5/max_motor_speed           : 3000 <!-- rad/min -->
-main/joint5/max_torque                : 50   <!-- 100% -->
-main/joint6/torque_for_emergency_stop : 100  <!-- 100 % -->
-main/joint6/over_load_level           : 100  <!-- 100 % -->
-main/joint6/over_speed_level          : 3000 <!-- rad/min -->
-main/joint6/motor_working_range       : 0.1  <!-- 0.1 -->
-main/joint6/max_motor_speed           : 3000 <!-- rad/min -->
-main/joint6/max_torque                : 50   <!-- 100% -->
+main/joint1/max_torque                : 1000   <!-- % (unit 0.1 %) -->
+main/joint2/torque_for_emergency_stop : 0
+main/joint2/over_load_level           : 0
+main/joint2/over_speed_level          : 0
+main/joint2/motor_working_range       : 1
+main/joint2/max_motor_speed           : 3000
+main/joint2/max_torque                : 1000
+main/joint3/torque_for_emergency_stop : 0
+main/joint3/over_load_level           : 0
+main/joint3/over_speed_level          : 0
+main/joint3/motor_working_range       : 1
+main/joint3/max_motor_speed           : 3000
+main/joint3/max_torque                : 1500
+main/joint4/torque_for_emergency_stop : 0
+main/joint4/over_load_level           : 0
+main/joint4/over_speed_level          : 0
+main/joint4/motor_working_range       : 1
+main/joint4/max_motor_speed           : 3000
+main/joint4/max_torque                : 1000
+main/joint5/torque_for_emergency_stop : 0
+main/joint5/over_load_level           : 0
+main/joint5/over_speed_level          : 0
+main/joint5/motor_working_range       : 1
+main/joint5/max_motor_speed           : 3000
+main/joint5/max_torque                : 1000
+main/joint6/torque_for_emergency_stop : 0
+main/joint6/over_load_level           : 0
+main/joint6/over_speed_level          : 0
+main/joint6/motor_working_range       : 1
+main/joint6/max_motor_speed           : 3000
+main/joint6/max_torque                : 1000
   </rosparam>
   <!-- Load hardware interface -->
   <include file="$(find minas_control)/launch/minas_control.launch" >
