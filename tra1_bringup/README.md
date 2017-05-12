@@ -60,5 +60,5 @@ $ rosrun rqt_joint_trajectory_controller rqt_joint_trajectory_controller
 To control via MoveIt, run
 
 ```
-$ tra1_bringup/launch/tra1_moveit.launch
+$ roslaunch tra1_bringup tra1_moveit.launch
 ```
