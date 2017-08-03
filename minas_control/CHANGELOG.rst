@@ -2,6 +2,9 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.2 (2017-05-12)
 ------------------
 * add more ROS_INFO message while insitializeing

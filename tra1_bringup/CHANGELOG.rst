@@ -2,6 +2,11 @@
 Changelog for package tra1_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix instruction
+* Contributors: 7675t
+
 1.0.2 (2017-05-12)
 ------------------
 

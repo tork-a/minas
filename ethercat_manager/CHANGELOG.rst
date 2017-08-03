@@ -2,6 +2,9 @@
 Changelog for package ethercat_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.2 (2017-05-12)
 ------------------
 

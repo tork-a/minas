@@ -2,6 +2,11 @@
 Changelog for package tra1_moveit_config
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add end effector to tra1_moveit_config
+* Contributors: Ryosuke Tajima
+
 1.0.2 (2017-05-12)
 ------------------
 
