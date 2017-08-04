@@ -3,7 +3,7 @@ general:
     - "$CIRCLE_ARTIFACTS/"
 machine:
   environment:
-    PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin  # disable circle ci virtual env...
+    PATH: /usr/local/sbin:/usr/local/bin:/usr/local/go/bin:/usr/sbin:/usr/bin:/sbin:/bin  # disable circle ci virtual env...
     ROS_DISTRO: indigo
     ROS_REPOSITORY_PATH: http://packages.ros.org/ros/ubuntu
 dependencies:
