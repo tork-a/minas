@@ -1,18 +1,23 @@
 #!/bin/bash
 
 set -e
-set -x
 
-sudo apt-get install -y git golang-1.6-go
-sudo ln -sf /usr/lib/go-1.6/bin/go  /usr/local/bin/go
-git clone -b v2.2.2 https://github.com/github/hub.git;
-(cd hub; ./script/build; sudo cp hub /usr/local/bin/)
+# install latest hub 2017.08.04
+git clone -b v2.3.0-pre10 https://github.com/github/hub.git
+(cd hub; ./script/build; sudo cp bin/hub /usr/local/bin/)
+
+echo "show hub version"
+hub version
 
 mkdir -p ~/.config/
 echo "github.com:" > ~/.config/hub
 echo "- user: k-okada" >> ~/.config/hub
 echo "  oauth_token: $GITHUB_ACCESS_TOKEN" >> ~/.config/hub
+
+files=''
 for file in $CIRCLE_ARTIFACTS/*.{pdf,deb} ; do 
-    hub release create -p -a $file -m "$CIRCLE_TAG"$'\n'"Released on `date '+%Y/%m/%d %H:%M:%S'`" $CIRCLE_TAG;
+    files="$files -a $file"
 done
 
+set -x
+hub release create -p $files -m "$CIRCLE_TAG"$'\n\n'"Released on `date '+%Y/%m/%d %H:%M:%S'`" $CIRCLE_TAG
