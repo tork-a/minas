@@ -7,6 +7,7 @@
   </description>
   <author email="ryosuke.tajima@opensource-robotics.tokyo.jp">Ryosuke Tajima</author>
   <maintainer email="ryosuke.tajima@opensource-robotics.tokyo.jp">Ryosuke Tajima</maintainer>
+  <maintainer email="dev@opensource-robotics.tokyo.jp">Tokyo Opensource Robotics Kyokai (TORK) Developer Team</maintainer>
 
   <license>BSD</license>
 
@@ -16,21 +17,21 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
-  <run_depend>moveit_ros_move_group</run_depend>
+  <run_depend>joint_state_publisher</run_depend>
+  <run_depend>joy</run_depend>
   <run_depend>moveit_kinematics</run_depend>
   <run_depend>moveit_planners_ompl</run_depend>
+  <run_depend>moveit_ros_move_group</run_depend>
   <run_depend>moveit_ros_visualization</run_depend>
   <run_depend>moveit_ros_warehouse</run_depend>
   <run_depend>moveit_simple_controller_manager</run_depend>
-  <run_depend>joint_state_publisher</run_depend>
-  <run_depend>joy</run_depend>
   <run_depend>robot_state_publisher</run_depend>
   <run_depend>rviz</run_depend>
+  <run_depend>tra1_description</run_depend>
   <run_depend>warehouse_ros</run_depend>
   <run_depend>xacro</run_depend>
 
-  <build_depend>tra1_description</build_depend>
-  <run_depend>tra1_description</run_depend>
-
+  <test_depend>roslaunch</test_depend>
+  <test_depend>rostest</test_depend>
 
 </package>

@@ -2,24 +2,29 @@
 <package>
   <name>ethercat_manager</name>
   <version>1.0.3</version>
-  <description>
-The ethercat_manager package,
-
-      ROS-Industrial support stack for facilitating communication with EtherCAT networks.
-
-copied from https://github.com/ros-industrial/robotiq/blob/jade-devel/robotiq_ethercat/src/ethercat_manager.cpp
+  <description>ROS-Industrial support stack for facilitating communication with
+EtherCAT networks. The code is mainly copied from https://github.com/ros-industrial/robotiq/blob/jade-devel/robotiq_ethercat/src/ethercat_manager.cpp
   </description>
 
-  <maintainer email="534o@opensource-robotics.tokyo.jp">Tokyo Opensource Robotics Developer 534</maintainer>
   <author email="jonathan.meyer@swri.org">Jonathan Meyer</author>
+  <maintainer email="dev@opensource-robotics.tokyo.jp">Tokyo Opensource Robotics Kyokai (TORK) Developer Team</maintainer>
 
   <license>BSD</license>
 
+  <url type="website">http://ros.org/wiki/ethercat_manager</url>
+  <url type="repository">https://github.com/tork-a/minas</url>
+  <url type="bugtracker">https://github.com/tork-a/minas/issues</url>
+
   <buildtool_depend>catkin</buildtool_depend>
+
   <build_depend>roscpp</build_depend>
   <build_depend>soem</build_depend>
+
   <run_depend>roscpp</run_depend>
   <run_depend>soem</run_depend>
+
+  <test_depend>roslaunch</test_depend>
+  <test_depend>rostest</test_depend>
 
   <export>
   </export>
