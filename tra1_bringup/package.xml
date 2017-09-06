@@ -7,7 +7,7 @@
   <author email="534o@opensource-robotics.tokyo.jp">Tokyo Opensource Robotics Developer 534</author>
   <maintainer email="dev@opensource-robotics.tokyo.jp">Tokyo Opensource Robotics Kyokai (TORK) Developer Team</maintainer>
 
-  <license>GPL</license>
+  <license>GPLv2</license>
 
   <url type="website">http://ros.org/wiki/tra1_bringup</url>
   <url type="repository">https://github.com/tork-a/minas</url>

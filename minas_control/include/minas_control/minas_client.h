@@ -1,6 +1,6 @@
 /****************************************************************************
 # minas_client.h:  MINAS A5B EtherCAT Motor Controller                      #
-# Copyright (C) 2016, 2016, Tokyo Opensource Robotics Kyokai Association    #
+# Copyright (C) 2016, 2017, Tokyo Opensource Robotics Kyokai Association    #
 #                                                                           #
 # This program is free software; you can redistribute it and/or modify      #
 # it under the terms of the GNU General Public License as published by      #
