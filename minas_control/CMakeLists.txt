@@ -6,7 +6,8 @@ find_package(catkin REQUIRED COMPONENTS controller_manager transmission_interfac
 ###################################
 ## catkin specific configuration ##
 ###################################
-catkin_package()
+catkin_package(
+  CATKIN_DEPENDS trajectory_msgs sensor_msgs)
 
 ###########
 ## Build ##
