@@ -2,6 +2,15 @@
 Changelog for package tra1_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* set license as GPLv2/CC-BY-SA,add LICENSE for meshes (`#55 <https://github.com/tork-a/minas/issues/55>`_)
+  * set license as GPLv2/CC-BY-SA,add LICENSE for meshes
+  * cleanup code
+  * fix wrong license data, add LICENSE information to xacro files
+  * cleanup package.xml
+* Contributors: Ryosuke Tajima, Tokyo Opensource Robotics Developer 534
+
 1.0.3 (2017-08-04)
 ------------------
 
