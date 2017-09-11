@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(minas_control)
 
-find_package(catkin REQUIRED COMPONENTS controller_manager transmission_interface hardware_interface sensor_msgs joint_limits_interface trajectory_msgs ethercat_manager soem)
+find_package(catkin REQUIRED COMPONENTS controller_manager diagnostic_updater transmission_interface hardware_interface sensor_msgs joint_limits_interface trajectory_msgs ethercat_manager soem)
 
 ###################################
 ## catkin specific configuration ##
 ###################################
 catkin_package(
-  CATKIN_DEPENDS trajectory_msgs sensor_msgs)
+  CATKIN_DEPENDS diagnostic_updater trajectory_msgs sensor_msgs)
 
 ###########
 ## Build ##
