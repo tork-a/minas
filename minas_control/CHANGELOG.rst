@@ -2,6 +2,9 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.5 (2017-09-12)
 ------------------
 * add .travis.yml using ros_build_farm (`#58 <https://github.com/tork-a/minas/issues/58>`_)
