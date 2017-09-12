@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package>
+  <name>minas</name>
+  <version>1.0.5</version>
+  <description>Meta package for minas for PANASONIC MINAS EtherCAT Motor Driver Control System</description>
+
+  <author email="534o@opensource-robotics.tokyo.jp">Tokyo Opensource Robotics Developer 534</author>
+  <maintainer email="dev@opensource-robotics.tokyo.jp">Tokyo Opensource Robotics Kyokai (TORK) Developer Team</maintainer>
+
+  <license>GPLv2</license>
+  <license>BSD</license>
+  <license>CC-BY-SA</license>
+
+  <url type="website">http://ros.org/wiki/minas</url>
+  <url type="repository">https://github.com/tork-a/minas</url>
+  <url type="bugtracker">https://github.com/tork-a/minas/issues</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <run_depend>ethercat_manager</run_depend>
+  <run_depend>minas_control</run_depend>
+  <run_depend>tra1_bringup</run_depend>
+  <run_depend>tra1_description</run_depend>
+  <run_depend>tra1_moveit_config</run_depend>
+
+  <export>
+    <metapackage/>
+  </export>
+</package>
