@@ -17,6 +17,7 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>controller_manager</build_depend>
+  <build_depend>diagnostic_updater</build_depend>
   <build_depend>ethercat_manager</build_depend>
   <build_depend>hardware_interface</build_depend>
   <build_depend>joint_limits_interface</build_depend>
@@ -38,5 +39,6 @@
   <test_depend>rostest</test_depend>
 
   <export>
+    <rosdoc config="rosdoc.yaml" />
   </export>
 </package>
