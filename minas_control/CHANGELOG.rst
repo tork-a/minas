@@ -2,6 +2,13 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* add .travis.yml using ros_build_farm (`#58 <https://github.com/tork-a/minas/issues/58>`_)
+  * add rosdoc.yaml
+  * package.xml, CMakeLists.txt: add depends to diagnostic_updater
+  * Contributors: Ryosuke Tajima, Tokyo Opensource Robotics Developer 534
+
 1.0.4 (2017-09-11)
 ------------------
 * set license as GPLv2/CC-BY-SA,add LICENSE for meshes (`#55 <https://github.com/tork-a/minas/issues/55>`_)
