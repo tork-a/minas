@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>tra1_bringup</name>
-  <version>1.0.5</version>
+  <version>1.0.6</version>
   <description>Package contains bringup scripts/config/tools for tra1 robto</description>
 
   <author email="534o@opensource-robotics.tokyo.jp">Tokyo Opensource Robotics Developer 534</author>

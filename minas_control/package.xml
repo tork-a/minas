@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>minas_control</name>
-  <version>1.0.5</version>
+  <version>1.0.6</version>
   <description>This package contains ros_control based robot controller for PANASONIC MINAS EtherCAT Motor Driver Control System</description>
 
   <author email="534o@opensource-robotics.tokyo.jp">Tokyo Opensource Robotics Developer 534</author>
