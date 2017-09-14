@@ -25,6 +25,7 @@
   <run_depend>moveit_ros_visualization</run_depend>
   <run_depend>moveit_ros_warehouse</run_depend>
   <run_depend>moveit_simple_controller_manager</run_depend>
+  <run_depend>moveit_fake_controller_manager</run_depend>
   <run_depend>robot_state_publisher</run_depend>
   <run_depend>rviz</run_depend>
   <run_depend>tra1_description</run_depend>
