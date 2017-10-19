@@ -198,7 +198,7 @@ EtherCatManager::~EtherCatManager()
   cycle_thread_.join();
 }
 
-#define IF_MINAS(_ec_slave) (((int)_ec_slave.eep_man == 0x066f) & ((((0xf0000000&(int)ec_slave[cnt].eep_id)>>28) == 0x5) || (((0xf0000000&(int)ec_slave[cnt].eep_id)>>28) == 0xD)))
+#define IF_MINAS(_ec_slave) (((int)_ec_slave.eep_man == 0x066f) && ((((0xf0000000&(int)ec_slave[cnt].eep_id)>>28) == 0x5) || (((0xf0000000&(int)ec_slave[cnt].eep_id)>>28) == 0xD)))
 bool EtherCatManager::initSoem(const std::string& ifname) {
   // Copy string contents because SOEM library doesn't 
   // practice const correctness
