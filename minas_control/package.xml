@@ -25,6 +25,7 @@
   <build_depend>soem</build_depend>
   <build_depend>trajectory_msgs</build_depend>
   <build_depend>transmission_interface</build_depend>
+  <build_depend>tinyxml</build_depend>
 
   <run_depend>controller_manager</run_depend>
   <run_depend>diagnostic_updater</run_depend>
@@ -34,6 +35,7 @@
   <run_depend>sensor_msgs</run_depend>
   <run_depend>trajectory_msgs</run_depend>
   <run_depend>transmission_interface</run_depend>
+  <run_depend>tinyxml</run_depend>
 
   <test_depend>roslaunch</test_depend>
   <test_depend>rostest</test_depend>

@@ -1,4 +1,4 @@
-# minas package
+# minas package [![CircleCI](https://circleci.com/gh/tork-a/minas.svg?style=svg)](https://circleci.com/gh/tork-a/minas)
 
 ## Try it on MoveIt! with real robot 
 
