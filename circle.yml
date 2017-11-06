@@ -20,6 +20,8 @@ dependencies:
     - mkdir -p ~/catkin_ws/src
     - cd ~/catkin_ws/src && ln -sf ~/$CIRCLE_PROJECT_REPONAME $CIRCLE_PROJECT_REPONAME
 test:
+  pre:
+    - rosdep update
   override:
     # compile
     - . /opt/ros/$ROS_DISTRO/setup.bash && cd ~/catkin_ws && rosdep install --from-paths src/ --ignore-src -y 
@@ -51,7 +53,6 @@ test:
           ubuntu:
             apt: ros-indigo-tra1-bringup
       EOF"
-    - rosdep update
     - . /opt/ros/$ROS_DISTRO/setup.bash && cd ~/catkin_ws && set -x; for package in ethercat_manager minas_control tra1_description tra1_moveit_config tra1_bringup; do
         catkin_make --pkg ${package} --make-args debbuild_${package};
         package=$(echo $package | tr '_' '-');
