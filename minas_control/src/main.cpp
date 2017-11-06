@@ -61,7 +61,7 @@
 #include <diagnostic_msgs/DiagnosticArray.h>
 #include <string>
 #include <vector>
-
+#include <tinyxml.h>
 //
 #include <minas_control/minas_hardware_interface.h>
 
