@@ -2,6 +2,13 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add parameter home_encoder_offset (`#63 <https://github.com/tork-a/minas/issues/63>`_)
+* Reduce sleep time in each client (`#51 <https://github.com/tork-a/minas/issues/51>`_)
+* Add dependency on tinyxml (`#62 <https://github.com/tork-a/minas/issues/62>`_)
+* Contributors: Ryosuke Tajima
+
 1.0.6 (2017-09-12)
 ------------------
 

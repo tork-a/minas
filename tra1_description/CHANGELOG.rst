@@ -2,6 +2,9 @@
 Changelog for package tra1_description
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     
+Forthcoming
+-----------
+
 1.0.6 (2017-09-12)
 ------------------
 
