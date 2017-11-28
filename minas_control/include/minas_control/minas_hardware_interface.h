@@ -44,6 +44,7 @@ struct JointData
   double pos_;
   double vel_;
   double eff_;
+  int home_encoder_offset_;
 };
 
 class JointControlInterface
@@ -75,7 +76,7 @@ class JointControlInterface
 class EtherCATJointControlInterface : public JointControlInterface
 {
  public:
-  EtherCATJointControlInterface(ethercat::EtherCatManager* manager, int slave_no, hardware_interface::JointStateInterface& jnt_stat, hardware_interface::PositionJointInterface& jnt_cmd, int torque_for_emergency_stop, int over_load_level, int over_speed_level, double motor_working_range, int max_motor_speed, int max_torque);
+  EtherCATJointControlInterface(ethercat::EtherCatManager* manager, int slave_no, hardware_interface::JointStateInterface& jnt_stat, hardware_interface::PositionJointInterface& jnt_cmd, int torque_for_emergency_stop, int over_load_level, int over_speed_level, double motor_working_range, int max_motor_speed, int max_torque, int home_encoder_offset);
   ~EtherCATJointControlInterface();
   void read();
   void write();
@@ -130,7 +131,7 @@ public:
   ros::Time getTime();
   ros::Duration getPeriod();
 
-  void getParamFromROS(int joint_no, int &torque_for_emergency_stop, int &over_load_level, int &over_speed_level, double &motor_working_range, int &max_motor_speed, int &max_torque);
+  void getParamFromROS(int joint_no, int &torque_for_emergency_stop, int &over_load_level, int &over_speed_level, double &motor_working_range, int &max_motor_speed, int &max_torque, int &home_encoder_offset);
 };
 
 } // namespace
