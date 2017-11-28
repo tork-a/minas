@@ -100,7 +100,16 @@ namespace minas_control
     client->writeOutputs(output);
 
     // set home_encoder_offset
-    joint.home_encoder_offset_ = home_encoder_offset;
+    // encoder resolution is 17Bit(131072 per round)
+    if (abs(home_encoder_offset) > 100000)
+    {
+      ROS_WARN("Invalid large home_encoder_offset value: %d", joint.home_encoder_offset_);
+      ROS_WARN("Please check your home_encoder_offset parameter is correct.");
+    }
+    else
+    {
+      joint.home_encoder_offset_ = home_encoder_offset;
+    }
     ROS_INFO("home_encoder_offset = %d", joint.home_encoder_offset_);
 
     ROS_WARN("target position = %08x", output.target_position);
