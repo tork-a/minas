@@ -2,8 +2,8 @@
 Changelog for package tra1_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.8 (2017-11-28)
+------------------
 * Add parameter home_encoder_offset (`#63 <https://github.com/tork-a/minas/issues/63>`_)
 * Contributors: Ryosuke Tajima
 

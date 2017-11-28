@@ -2,8 +2,8 @@
 Changelog for package ethercat_manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.8 (2017-11-28)
+------------------
 * fixed IF_MINAS (`#60 <https://github.com/tork-a/minas/issues/60>`_)
   * an operator "&" seems to be missed.
 * Contributors: Cong Liu
