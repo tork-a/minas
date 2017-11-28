@@ -29,7 +29,7 @@ namespace minas_control
 #define PULSE_PER_REVOLUTE ( (1048576 / (2 * M_PI) ) * 101 ) // 20 bit / 101 reduction
   //#define PULSE_PER_REVOLUTE ( ( 131072 / (2 * M_PI) ) * 101 )// 17 bit / 101 reduction
 
-  EtherCATJointControlInterface::EtherCATJointControlInterface(ethercat::EtherCatManager* manager, int slave_no, hardware_interface::JointStateInterface& jnt_stat, hardware_interface::PositionJointInterface& jnt_cmd, int torque_for_emergency_stop, int over_load_level, int over_speed_level, double motor_working_range, int max_motor_speed, int max_torque) : JointControlInterface(slave_no, jnt_stat, jnt_cmd)
+  EtherCATJointControlInterface::EtherCATJointControlInterface(ethercat::EtherCatManager* manager, int slave_no, hardware_interface::JointStateInterface& jnt_stat, hardware_interface::PositionJointInterface& jnt_cmd, int torque_for_emergency_stop, int over_load_level, int over_speed_level, double motor_working_range, int max_motor_speed, int max_torque, int home_encoder_offset) : JointControlInterface(slave_no, jnt_stat, jnt_cmd)
   {
     ROS_INFO("Initialize EtherCATJoint (%d)", slave_no);
     // EtherCAT
@@ -99,9 +99,22 @@ namespace minas_control
     output.controlword   &= ~0x0010; // clear new-set-point (bit4)
     client->writeOutputs(output);
 
+    // set home_encoder_offset
+    // encoder resolution is 17Bit(131072 per round)
+    if (abs(home_encoder_offset) > 100000)
+    {
+      ROS_WARN("Invalid large home_encoder_offset value: %d", joint.home_encoder_offset_);
+      ROS_WARN("Please check your home_encoder_offset parameter is correct.");
+    }
+    else
+    {
+      joint.home_encoder_offset_ = home_encoder_offset;
+    }
+    ROS_INFO("home_encoder_offset = %d", joint.home_encoder_offset_);
+
     ROS_WARN("target position = %08x", output.target_position);
     ROS_WARN("position offset = %08x", output.position_offset);
-    joint.cmd_ = joint.pos_ = current_position / (PULSE_PER_REVOLUTE);
+    joint.cmd_ = joint.pos_ = (current_position - joint.home_encoder_offset_) / PULSE_PER_REVOLUTE;
     joint.vel_ = joint.eff_ = 0;
     ROS_INFO("Initialize EtherCATJoint .. done");
   }
@@ -126,20 +139,20 @@ namespace minas_control
   {
     input = client->readInputs();
     output = client->readOutputs();
-    joint.pos_ = int32_t(input.position_actual_value) / PULSE_PER_REVOLUTE;
+    joint.pos_ = int32_t(input.position_actual_value - joint.home_encoder_offset_) / PULSE_PER_REVOLUTE;
     joint.vel_ = int32_t(input.velocity_actual_value) / PULSE_PER_REVOLUTE;
     joint.eff_ = int32_t(input.torque_actual_value) / PULSE_PER_REVOLUTE;
   }
 
   void EtherCATJointControlInterface::write()
   {
-    output.position_offset = uint32_t(joint.cmd_ * PULSE_PER_REVOLUTE);
+    output.position_offset = uint32_t(joint.cmd_ * PULSE_PER_REVOLUTE + joint.home_encoder_offset_);
     client->writeOutputs(output);
   }
 
   //
   DummyJointControlInterface::DummyJointControlInterface(int slave_no, hardware_interface::JointStateInterface& jnt_stat, hardware_interface::PositionJointInterface& jnt_cmd) : JointControlInterface(slave_no, jnt_stat, jnt_cmd) {
-    joint.cmd_ = joint.pos_ = joint.vel_ = joint.eff_ = 0;
+    joint.cmd_ = joint.pos_ = joint.vel_ = joint.eff_ = joint.home_encoder_offset_ = 0;
   }
 
   void DummyJointControlInterface::read()
@@ -154,7 +167,7 @@ namespace minas_control
   }
 
   //
-  void MinasHardwareInterface::getParamFromROS(int joint_no, int &torque_for_emergency_stop, int &over_load_level, int &over_speed_level, double &motor_working_range, int &max_motor_speed, int &max_torque)
+  void MinasHardwareInterface::getParamFromROS(int joint_no, int &torque_for_emergency_stop, int &over_load_level, int &over_speed_level, double &motor_working_range, int &max_motor_speed, int &max_torque, int &home_encoder_offset)
   {
     std::string joint_name("~joint" + boost::lexical_cast<std::string>(joint_no));
     ros::param::param<int>(joint_name + "/torque_for_emergency_stop", torque_for_emergency_stop, 100); // 100%
@@ -169,6 +182,9 @@ namespace minas_control
     ros::param::param<int>(joint_name + "/max_torque", max_torque, 500); // 50% (unit 0.1%)
     ROS_INFO_STREAM_NAMED("minas", joint_name + "/max_motor_speed           : " << max_motor_speed);
     ROS_INFO_STREAM_NAMED("minas", joint_name + "/max_torque                : " << max_torque);
+    // Encoder offset at angle = 0
+    ros::param::param<int>(joint_name + "/home_encoder_offset", home_encoder_offset, 0);
+    ROS_INFO_STREAM_NAMED("minas", joint_name + "/home_encoder_offset       : " << home_encoder_offset);
   }
 
   MinasHardwareInterface::MinasHardwareInterface(std::string ifname, bool in_simulation)
@@ -180,8 +196,8 @@ namespace minas_control
       for (int i = 1; i <= 6; i++ ) {
         int torque_for_emergency_stop, over_load_level, over_speed_level;
         double motor_working_range;
-        int max_motor_speed, max_torque;
-        getParamFromROS(i, torque_for_emergency_stop, over_load_level, over_speed_level, motor_working_range, max_motor_speed, max_torque);
+        int max_motor_speed, max_torque, home_encoder_offset;
+        getParamFromROS(i, torque_for_emergency_stop, over_load_level, over_speed_level, motor_working_range, max_motor_speed, max_torque, home_encoder_offset);
 	registerControl(new DummyJointControlInterface(i,
 						       joint_state_interface,
 						       joint_position_interface
@@ -201,12 +217,13 @@ namespace minas_control
           int torque_for_emergency_stop, over_load_level, over_speed_level;
           double motor_working_range;
           int max_motor_speed, max_torque;
-          getParamFromROS(i, torque_for_emergency_stop, over_load_level, over_speed_level, motor_working_range, max_motor_speed, max_torque);
+          int home_encoder_offset;
+          getParamFromROS(i, torque_for_emergency_stop, over_load_level, over_speed_level, motor_working_range, max_motor_speed, max_torque, home_encoder_offset);
 	  registerControl(new EtherCATJointControlInterface(manager, i,
 							    joint_state_interface,
 							    joint_position_interface,
                                                             torque_for_emergency_stop, over_load_level, over_speed_level, motor_working_range,
-                                                            max_motor_speed, max_torque
+                                                            max_motor_speed, max_torque, home_encoder_offset
                                                             ));
 	}
       for (; i <= 6; i++ )
