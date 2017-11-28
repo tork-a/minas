@@ -24,6 +24,8 @@
 // An effort to keep the lines less than 100 char long
 namespace minas_control
 {
+static const unsigned SLEEP_TIME_MS = 1; // 1 ms
+
 MinasClient::MinasClient(ethercat::EtherCatManager& manager, int slave_no)
   : manager_(manager)
   , slave_no_(slave_no)
@@ -144,7 +146,7 @@ void MinasClient::reset()
 	   input.error_code, input.statusword, input.operation_mode, input.position_actual_value);
       printf("Waiting for Fault Reset...\n");
     }
-    usleep(10*1000);
+    usleep(SLEEP_TIME_MS*1000);
     input = readInputs();
   }
   printf("Fault was cleared\n");
@@ -176,7 +178,7 @@ void MinasClient::servoOn()
 	return;
       }
     writeOutputs(output);
-    usleep(10*1000);
+    usleep(SLEEP_TIME_MS*1000);
     input = readInputs();
     if (loop++ % 100 == 1) printPDSStatus(input);
   }
@@ -206,7 +208,7 @@ void MinasClient::servoOff()
 	break;
     }
     writeOutputs(output);
-    usleep(10*1000);
+    usleep(SLEEP_TIME_MS*1000);
     input = readInputs();
     if (loop++ % 100 == 1) printPDSStatus(input);
   }
