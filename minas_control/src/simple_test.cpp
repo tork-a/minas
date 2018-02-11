@@ -39,7 +39,7 @@ void help() {
 int main(int argc, char *argv[])
 {
   int operation_mode = 0x01; // (pp) position profile mode
-  std::string ifname;
+  std::string ifname = "eth0";
 
   printf("MINAS Simple Test using SOEM (Simple Open EtherCAT Master)\n");
   while (1) {
