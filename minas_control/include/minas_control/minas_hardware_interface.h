@@ -40,11 +40,16 @@ namespace minas_control
 struct JointData
 {
   std::string name_;
+  std::string hardware_id_;
   double cmd_;
   double pos_;
   double vel_;
   double eff_;
   int home_encoder_offset_;
+  // Input
+  uint32 position_actual_value;		// 6064h : Position actual value
+  uint32 velocity_actual_value;		// 606Ch : Velocity actual value
+  uint16 torque_actual_value;		// 6077h : Torque actual value
 };
 
 class JointControlInterface
@@ -68,6 +73,18 @@ class JointControlInterface
   virtual void read() = 0;
   virtual void write() = 0;
   virtual void shutdown() = 0;
+
+  void getInputActualValueToStatus(std::string &joint_name,
+                                   std::string &hardware_id,
+                                   uint32 &position_actual_value,
+                                   uint32 &velocity_actual_value,
+                                   uint16 &torque_actual_value) {
+    joint_name = joint.name_;
+    hardware_id = joint.hardware_id_;
+    position_actual_value = joint.position_actual_value;
+    velocity_actual_value = joint.velocity_actual_value;
+    torque_actual_value = joint.torque_actual_value;
+  }
 
   protected:
     JointData joint;
@@ -131,6 +148,11 @@ public:
   ros::Time getTime();
   ros::Duration getPeriod();
 
+  int getInputActualValueToStatus(std::vector<std::string> &joint_names,
+                                  std::vector<std::string> &hardware_ids,
+                                  std::vector<uint32> &position_actual_values,
+                                  std::vector<uint32> &velocity_actual_values,
+                                  std::vector<uint16> &torque_actual_values);
   void getParamFromROS(int joint_no, int &torque_for_emergency_stop, int &over_load_level, int &over_speed_level, double &motor_working_range, int &max_motor_speed, int &max_torque, int &home_encoder_offset);
 };
 
