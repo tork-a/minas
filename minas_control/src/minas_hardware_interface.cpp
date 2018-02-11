@@ -61,6 +61,9 @@ namespace minas_control
     ROS_INFO("Initialize EtherCATJoint (readInputs)");
     input = client->readInputs();
     int32 current_position = input.position_actual_value;
+    ROS_INFO("                         (PositionActualValue %d)", input.position_actual_value);
+    ROS_INFO("                         (VelocityActualValue %d)", input.velocity_actual_value);
+    ROS_INFO("                         (TorqueActualValue   %d)", input.torque_actual_value);
 
     ROS_INFO("Initialize EtherCATJoint (set target position)");
     // set target position
