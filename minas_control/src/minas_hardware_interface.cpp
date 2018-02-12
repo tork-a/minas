@@ -101,16 +101,17 @@ namespace minas_control
 
     // set home_encoder_offset
     // encoder resolution is 17Bit(131072 per round)
-    if (abs(home_encoder_offset) > 100000)
+    if (abs(home_encoder_offset) > 3000000)
     {
-      ROS_WARN("Invalid large home_encoder_offset value: %d", joint.home_encoder_offset_);
+      ROS_WARN("Invalid large home_encoder_offset value: %d", home_encoder_offset);
       ROS_WARN("Please check your home_encoder_offset parameter is correct.");
+      joint.home_encoder_offset_ = 0;
     }
     else
     {
-      joint.home_encoder_offset_ = home_encoder_offset;
+      joint.home_encoder_offset_ = home_encoder_offset * 8; // set 8 times, because pana term shows 1/8 offset value. need to be investigated.
     }
-    ROS_INFO("home_encoder_offset = %d", joint.home_encoder_offset_);
+    ROS_INFO("%s: home_encoder_offset = %d", joint.name_.c_str(), joint.home_encoder_offset_);
 
     ROS_WARN("target position = %08x", output.target_position);
     ROS_WARN("position offset = %08x", output.position_offset);
@@ -142,6 +143,7 @@ namespace minas_control
     joint.pos_ = int32_t(input.position_actual_value - joint.home_encoder_offset_) / PULSE_PER_REVOLUTE;
     joint.vel_ = int32_t(input.velocity_actual_value) / PULSE_PER_REVOLUTE;
     joint.eff_ = int32_t(input.torque_actual_value) / PULSE_PER_REVOLUTE;
+    //fprintf(stderr, "%s: %d %d %f\n", joint.name_.c_str(), input.position_actual_value, joint.home_encoder_offset_, joint.pos_);
   }
 
   void EtherCATJointControlInterface::write()
