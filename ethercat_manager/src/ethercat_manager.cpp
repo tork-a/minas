@@ -399,6 +399,25 @@ int EtherCatManager::getNumClinets() const
   return num_clients_;
 }
 
+void EtherCatManager::getStatus(int slave_no, std::string &name, int &eep_man, int &eep_id, int &eep_rev, int &obits, int &ibits, int &state, int &pdelay, int &hasdc, int &activeports, int &configadr) const
+{
+  if (slave_no > ec_slavecount) {
+    fprintf(stderr, "ERROR : slave_no(%d) is larger than ec_slavecount(%d)\n", slave_no, ec_slavecount);
+    exit(1);
+  }
+  name = std::string(ec_slave[slave_no].name);
+  eep_man = (int)ec_slave[slave_no].eep_man;
+  eep_id  = (int)ec_slave[slave_no].eep_id;
+  eep_rev = (int)ec_slave[slave_no].eep_rev;
+  obits   = ec_slave[slave_no].Obits;
+  ibits   = ec_slave[slave_no].Ibits;
+  state   = ec_slave[slave_no].state;
+  pdelay  = ec_slave[slave_no].pdelay;
+  hasdc   = ec_slave[slave_no].hasdc;
+  activeports = ec_slave[slave_no].activeports;
+  configadr   = ec_slave[slave_no].configadr;
+}
+
 void EtherCatManager::write(int slave_no, uint8_t channel, uint8_t value)
 {
   boost::mutex::scoped_lock lock(iomap_mutex_);

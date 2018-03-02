@@ -132,6 +132,11 @@ public:
    */
   int getNumClinets() const;
 
+  /**
+   * \brief get the status of clients
+   */
+  void getStatus(int slave_no, std::string &name, int &eep_man, int &eep_id, int &eep_rev, int &obits, int &ibits, int &state, int &pdelay, int &hasdc, int &activeports, int &configadr) const;
+
 private:
   bool initSoem(const std::string& ifname);
 

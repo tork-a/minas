@@ -129,12 +129,35 @@ static struct
 }
 g_stats;
 
-static void publishDiagnostics(RealtimePublisher<diagnostic_msgs::DiagnosticArray> &publisher)
+static void publishDiagnostics(RealtimePublisher<diagnostic_msgs::DiagnosticArray> &publisher,
+                               minas_control::MinasHardwareInterface* robot = NULL)
 {
   if (publisher.trylock())
   {
     accumulator_set<double, stats<max, mean> > zero;
     vector<diagnostic_msgs::DiagnosticStatus> statuses;
+
+    if ( robot != NULL ) {
+      std::vector<std::string> joint_names;
+      std::vector<std::string> hardware_ids;
+      std::vector<uint32> position_actual_values;
+      std::vector<uint32> velocity_actual_values;
+      std::vector<uint16> torque_actual_values;
+      int n_dof = robot->getInputActualValueToStatus(joint_names, hardware_ids, position_actual_values, velocity_actual_values, torque_actual_values);
+      for(int i = 0; i < n_dof; i++)
+      {
+        diagnostic_updater::DiagnosticStatusWrapper status;
+        status.hardware_id = hardware_ids[i];
+        status.addf("Postion Actual Value", "%d", position_actual_values[i]);
+        status.addf("Velocity Actual Value", "%d", velocity_actual_values[i]);
+        status.addf("Torque Actual Value", "%d", torque_actual_values[i]);
+        status.level = 0;
+        status.message = "OK";
+        status.name = "Input Actual Values (" + joint_names[i] + ")";
+        statuses.push_back(status);
+      }
+    }
+    //
     diagnostic_updater::DiagnosticStatusWrapper status;
 
     static double max_ec = 0, max_cm = 0, max_loop = 0, max_jitter = 0;
@@ -336,7 +359,7 @@ void *controlLoop(void */*unused_param*/)  // NOLINT(readability/casting)
 
     if ((end - last_published) > 1.0)
     {
-      publishDiagnostics(publisher);
+      publishDiagnostics(publisher, &robot);
       last_published = end;
     }
 

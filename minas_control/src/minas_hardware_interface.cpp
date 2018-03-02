@@ -31,7 +31,17 @@ namespace minas_control
 
   EtherCATJointControlInterface::EtherCATJointControlInterface(ethercat::EtherCatManager* manager, int slave_no, hardware_interface::JointStateInterface& jnt_stat, hardware_interface::PositionJointInterface& jnt_cmd, int torque_for_emergency_stop, int over_load_level, int over_speed_level, double motor_working_range, int max_motor_speed, int max_torque, int home_encoder_offset) : JointControlInterface(slave_no, jnt_stat, jnt_cmd)
   {
-    ROS_INFO("Initialize EtherCATJoint (%d)", slave_no);
+    std::string name;
+    int eep_man, eep_id, eep_rev;
+    int obits, ibits, state, pdelay, hasdc;
+    int activeports, configadr;
+    manager->getStatus(slave_no, name, eep_man, eep_id, eep_rev, obits, ibits, state, pdelay, hasdc, activeports, configadr);
+    //
+    std::stringstream ss;
+    ss << name << "(" << configadr << ")";
+    joint.hardware_id_ = ss.str();
+
+    ROS_INFO("Initialize EtherCATJoint (%d) %s(man:%x, id:%x, rev:%x, port:%x, addr:%x)", slave_no, name.c_str(), eep_man, eep_id, eep_rev, activeports, configadr);
     // EtherCAT
     int operation_mode = 0x08; // (csp) cyclic synchronous position mode
 
@@ -61,6 +71,9 @@ namespace minas_control
     ROS_INFO("Initialize EtherCATJoint (readInputs)");
     input = client->readInputs();
     int32 current_position = input.position_actual_value;
+    ROS_INFO("                         (PositionActualValue %d)", input.position_actual_value);
+    ROS_INFO("                         (VelocityActualValue %d)", input.velocity_actual_value);
+    ROS_INFO("                         (TorqueActualValue   %d)", input.torque_actual_value);
 
     ROS_INFO("Initialize EtherCATJoint (set target position)");
     // set target position
@@ -143,6 +156,9 @@ namespace minas_control
     joint.pos_ = int32_t(input.position_actual_value - joint.home_encoder_offset_) / PULSE_PER_REVOLUTE;
     joint.vel_ = int32_t(input.velocity_actual_value) / PULSE_PER_REVOLUTE;
     joint.eff_ = int32_t(input.torque_actual_value) / PULSE_PER_REVOLUTE;
+    joint.position_actual_value = input.position_actual_value;
+    joint.velocity_actual_value = input.velocity_actual_value;
+    joint.torque_actual_value = input.torque_actual_value;
     //fprintf(stderr, "%s: %d %d %f\n", joint.name_.c_str(), input.position_actual_value, joint.home_encoder_offset_, joint.pos_);
   }
 
@@ -162,6 +178,9 @@ namespace minas_control
     joint.pos_ = joint.cmd_;
     joint.vel_ = 0;
     joint.eff_ = 0;
+    joint.position_actual_value = 0;
+    joint.velocity_actual_value = 0;
+    joint.torque_actual_value = 0;
   }
 
   void DummyJointControlInterface::write()
@@ -278,6 +297,30 @@ namespace minas_control
     BOOST_FOREACH (JointControlInterface* control, controls) {
       control->write();
     }
+  }
+
+  int MinasHardwareInterface::getInputActualValueToStatus(std::vector<std::string> &joint_names,
+                                                          std::vector<std::string> &hardware_ids,
+                                                          std::vector<uint32> &position_actual_values,
+                                                          std::vector<uint32> &velocity_actual_values,
+                                                          std::vector<uint16> &torque_actual_values)
+  {
+    int n_dof = 0;
+    BOOST_FOREACH (JointControlInterface* control, controls) {
+      std::string joint_name;
+      std::string hardware_id;
+      uint32 position_actual_value;
+      uint32 velocity_actual_value;
+      uint16 torque_actual_value;
+      control->getInputActualValueToStatus(joint_name, hardware_id, position_actual_value, velocity_actual_value, torque_actual_value);
+      joint_names.push_back(joint_name);
+      hardware_ids.push_back(hardware_id);
+      position_actual_values.push_back(position_actual_value);
+      velocity_actual_values.push_back(velocity_actual_value);
+      torque_actual_values.push_back(torque_actual_value);
+      n_dof++;
+    }
+    return n_dof;
   }
 
   inline ros::Time MinasHardwareInterface::getTime()
