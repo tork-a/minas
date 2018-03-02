@@ -2,8 +2,8 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.9 (2018-03-02)
+------------------
 * enable to publish actual position/velocity/torque value as /diagnostics (`#67 <https://github.com/tork-a/minas/issues/67>`_)
 * fix simple test without arguments (`#68 <https://github.com/tork-a/minas/issues/68>`_)
 * onsite fix for encoder offset(`#66 <https://github.com/tork-a/minas/issues/66>`_)
