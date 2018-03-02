@@ -2,6 +2,12 @@
 Changelog for package tra1_bringup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Set home_encoder_offset zero as default
+* Onsite fix for encoder offset
+* Contributors: Ryosuke Tajima
+
 1.0.8 (2017-11-28)
 ------------------
 * Add parameter home_encoder_offset (`#63 <https://github.com/tork-a/minas/issues/63>`_)
@@ -43,7 +49,7 @@ Changelog for package tra1_bringup
   * tra1_bringup/package.xml: add joint_state_controller and position_controllers to package.xml
   * tra1_bringup/CMakeList.txt: add test lauch files
   * tra1_bringup/package.xml: add more run_depends
-* 実験の際に変更するパラメータについてrosparam化する (`#33 <https://github.com/tork-a/minas/pull/33`_)
+* make parameters as rosparam (`#33 <https://github.com/tork-a/minas/pull/33`_)
   * tra1_bringup.launch/ joint1->joint5 : fix typo
   * move custom controller parameters for tra1 to tra1_bringup/launch/tra1_bringup.lauch
   * minas_control.launch add eth arg to set ether device name

@@ -2,6 +2,9 @@
 Changelog for package tra1_moveit_config
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.0.8 (2017-11-28)
 ------------------
 * add run_depend on moveit_fake_controller_manager
