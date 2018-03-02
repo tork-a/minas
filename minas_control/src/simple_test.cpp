@@ -27,10 +27,19 @@ void timespecInc(struct timespec &tick, int nsec)
     }
 }
 
+void help() {
+  fprintf(stderr, "Usage: simple_test [options]\n");
+  fprintf(stderr, "  Available options\n");
+  fprintf(stderr, "    -i, --interface     NIC interface name for EtherCAT network\n");
+  fprintf(stderr, "    -p, --position_mode Sample program using Position Profile (pp) mode (Default)\n");
+  fprintf(stderr, "    -c, --cycliec_mode  Sample program using cyclic synchronous position(csp) mode\n");
+  fprintf(stderr, "    -h, --help          Print this message and exit\n");
+}
+
 int main(int argc, char *argv[])
 {
   int operation_mode = 0x01; // (pp) position profile mode
-  std::string ifname;
+  std::string ifname = "eth0";
 
   printf("MINAS Simple Test using SOEM (Simple Open EtherCAT Master)\n");
   while (1) {
@@ -45,12 +54,7 @@ int main(int argc, char *argv[])
     if (c == -1) break;
     switch (c) {
     case 'h':
-      fprintf(stderr, "Usage: simple_test [options]\n");
-      fprintf(stderr, "  Available options\n");
-      fprintf(stderr, "    -i, --interface     NIC interface name for EtherCAT network\n");
-      fprintf(stderr, "    -p, --position_mode Sample program using Position Profile (pp) mode (Default)\n");
-      fprintf(stderr, "    -c, --cycliec_mode  Sample program using cyclic synchronous position(csp) mode\n");
-      fprintf(stderr, "    -h, --help          Print this message and exit\n");
+      help();
       exit(0);
       break;
     case 'p':
@@ -64,6 +68,7 @@ int main(int argc, char *argv[])
       break;
     }
   }
+  try {
   /* start slaveinfo */
   ethercat::EtherCatManager manager(ifname);
   std::vector<minas_control::MinasClient *> clients;
@@ -202,6 +207,9 @@ int main(int argc, char *argv[])
       client->printPDSOperation(input);
       client->servoOff();
     }
+  } catch ( ... ) {
+    help();
+  }
 
   printf("End program\n");
 
