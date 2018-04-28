@@ -2,6 +2,11 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Add dependency on realtime_tools(`#72 <https://github.com/tork-a/minas/issues/72>`_)
+* Contributors: Ryosuke Tajima, Tokyo Opensource Robotics Developer 534
+
 1.0.9 (2018-03-02)
 ------------------
 * enable to publish actual position/velocity/torque value as /diagnostics (`#67 <https://github.com/tork-a/minas/issues/67>`_)
