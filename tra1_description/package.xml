@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>tra1_description</name>
-  <version>1.0.9</version>
+  <version>1.0.10</version>
   <description>This package contains the description (mechanical, kinematic, visual,  etc.) of the TRA1 robot. The files in this package are parsed and used by a variety of other components.  Most users will not interact directly with this package.</description>
 
   <author email="ryosuke.tajima@opensource-robotics.tokyo.jp">Ryosuke Tajima</author>

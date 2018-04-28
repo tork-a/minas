@@ -2,8 +2,8 @@
 Changelog for package minas_control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.0.10 (2018-04-28)
+-------------------
 * Add dependency on realtime_tools(`#72 <https://github.com/tork-a/minas/issues/72>`_)
 * Contributors: Ryosuke Tajima, Tokyo Opensource Robotics Developer 534
 

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>minas</name>
-  <version>1.0.9</version>
+  <version>1.0.10</version>
   <description>Meta package for minas for PANASONIC MINAS EtherCAT Motor Driver Control System</description>
 
   <author email="534o@opensource-robotics.tokyo.jp">Tokyo Opensource Robotics Developer 534</author>
