@@ -60,7 +60,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
         <geometry>
             <mesh filename="package://tra1_description/meshes/B.STL" scale="${MODEL_RATIO} ${MODEL_RATIO} ${MODEL_RATIO}"/>
         </geometry>
-        <material name="grey"/>
+        <material name="grey4"/>
     </visual>
   </link>
   <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++joint1 -->
@@ -79,7 +79,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
       <geometry>
         <mesh filename="package://tra1_description/meshes/J1.STL" scale="${MODEL_RATIO} ${MODEL_RATIO} ${MODEL_RATIO}"/>
       </geometry>
-      <material name="black"/>
+      <material name="grey6"/>
     </visual>
   </link>
   <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++joint2 -->
@@ -98,7 +98,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
       <geometry>
         <mesh filename="package://tra1_description/meshes/J2.STL" scale="${MODEL_RATIO} ${MODEL_RATIO} ${MODEL_RATIO}"/>
       </geometry>
-      <material name="grey"/>
+      <material name="grey4"/>
     </visual>
   </link>
   <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++joint3 -->
@@ -117,7 +117,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
       <geometry>
         <mesh filename="package://tra1_description/meshes/J3.STL" scale="${MODEL_RATIO} ${MODEL_RATIO} ${MODEL_RATIO}"/>
       </geometry>
-      <material name="grey"/>
+      <material name="grey6"/>
     </visual>
   </link>
   <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++joint4 -->
@@ -136,7 +136,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
       <geometry>
         <mesh filename="package://tra1_description/meshes/J4.STL" scale="${MODEL_RATIO} ${MODEL_RATIO} ${MODEL_RATIO}"/>
       </geometry>
-      <material name="black"/>
+      <material name="grey4"/>
     </visual>
   </link>
   <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++joint5 -->
@@ -155,7 +155,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
       <geometry>
         <mesh filename="package://tra1_description/meshes/J5.STL" scale="${MODEL_RATIO} ${MODEL_RATIO} ${MODEL_RATIO}"/>
       </geometry>
-      <material name="grey"/>
+      <material name="grey6"/>
     </visual>
   </link>
   <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++joint6 -->
@@ -174,7 +174,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
       <geometry>
         <mesh filename="package://tra1_description/meshes/J6.STL" scale="${MODEL_RATIO} ${MODEL_RATIO} ${MODEL_RATIO}"/>
       </geometry>
-      <material name="black"/>
+      <material name="grey4"/>
     </visual>
   </link>
 
