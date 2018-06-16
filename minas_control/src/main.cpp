@@ -280,7 +280,6 @@ static void* terminate_control(RealtimePublisher<diagnostic_msgs::DiagnosticArra
 void *controlLoop(void */*unused_param*/)  // NOLINT(readability/casting)
 {
   double last_published, last_loop_start;
-  int policy;
   TiXmlElement *root;
   TiXmlElement *root_element;
 
@@ -322,10 +321,13 @@ void *controlLoop(void */*unused_param*/)  // NOLINT(readability/casting)
   publishDiagnostics(publisher);
 
   // Set to realtime scheduler for this thread
-  struct sched_param thread_param;
-  policy = SCHED_FIFO;
-  thread_param.sched_priority = sched_get_priority_max(policy);
-  pthread_setschedparam(pthread_self(), policy, &thread_param);
+  if (g_options.simulation_ == false)
+  {
+    struct sched_param thread_param;
+    int policy = SCHED_FIFO;
+    thread_param.sched_priority = sched_get_priority_max(policy);
+    pthread_setschedparam(pthread_self(), policy, &thread_param);
+  }
 
   struct timespec tick;
   clock_gettime(CLOCK_REALTIME, &tick);
@@ -462,14 +464,6 @@ static pthread_attr_t controlThreadAttr;
 
 int main(int argc, char *argv[])
 {
-  bool mlock_all = true;
-  // Keep the kernel from swapping us out
-  if (mlockall(MCL_CURRENT | MCL_FUTURE) < 0)
-  {
-    perror("Failed to lock memory. It is recommended to set permission to executables, for example: sudo setcap cap_net_raw,cap_ipc_lock=+ep main");
-    mlock_all = false;
-  }
-
   // Initialize ROS and parse command-line arguments
   ros::init(argc, argv, "realtime_loop");
 
@@ -512,14 +506,12 @@ int main(int argc, char *argv[])
         break;
     }
   }
-  if ( mlock_all == false ) {
-    // when mlock is false, on simulation, it'ok
-    if ( g_options.simulation_ == true) {
-      ROS_WARN("Continue running without mlockall");
-    }
-    // on real robot, something wrong, forget to setcap cap_net_raw,cap_ipc_lock=+ep
-    if ( g_options.simulation_ == false ) {
-      perror("Exitting .. real robots needs mlockall to run in realtime");
+  if (g_options.simulation_ == false)
+  {
+    // Keep the kernel from swapping us out
+    if (mlockall(MCL_CURRENT | MCL_FUTURE) < 0)
+    {
+      perror("Extting... failed to lock memory. It is recommended to set permission to executables, for example: sudo setcap cap_net_raw,cap_ipc_lock=+ep main");
       exit(EXIT_FAILURE);
     }
   }
